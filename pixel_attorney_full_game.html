@@ -1,0 +1,810 @@
+
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pixel Attorney - Real Viral Cases Edition (Lv.1-100)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes idle {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-4px); }
+        }
+        @keyframes shock {
+            0% { transform: translateX(0); }
+            20% { transform: translateX(-8px) rotate(-2deg); }
+            40% { transform: translateX(8px) rotate(2deg); }
+            60% { transform: translateX(-6px); }
+            80% { transform: translateX(6px); }
+            100% { transform: translateX(0); }
+        }
+        .anim-idle { animation: idle 3s ease-in-out infinite; }
+        .anim-shock { animation: shock 0.4s ease-in-out; }
+        body { user-select: none; }
+        input, textarea { user-select: text !important; -webkit-user-select: text !important; }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans min-h-screen flex flex-col items-center justify-between p-2 md:p-4">
+
+    <!-- Screen 1: Character Creation & Class Selection -->
+    <div id="character-creation-screen" class="w-full max-w-2xl bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-2xl flex flex-col gap-6 my-auto">
+        <div class="text-center border-b border-slate-800 pb-4">
+            <h1 class="text-2xl md:text-3xl font-black text-sky-400 tracking-wide">⚖️ สร้างทนายความของคุณ</h1>
+            <p class="text-xs text-slate-400 mt-1">ปรับแต่งรูปลักษณ์ เลือกสายอาชีพ และตั้งชื่อก่อนเข้าสู่ชั้นศาลคดีดัง</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+            <!-- Character Preview Card -->
+            <div class="bg-slate-950 border border-slate-800 rounded-xl p-6 flex flex-col items-center justify-center gap-3 relative shadow-inner">
+                <span class="text-[10px] text-sky-400 font-bold bg-slate-900 border border-sky-500/30 px-2 py-0.5 rounded-full" id="preview-class-badge">สายทนายความ</span>
+                <div id="character-avatar-preview" class="w-28 h-32 rounded-2xl flex items-center justify-center text-6xl shadow-xl transition-all duration-300 anim-idle border-2">
+                    👨‍⚖️
+                </div>
+                <div class="text-center">
+                    <div id="preview-name" class="font-bold text-base text-slate-100">ทนายความ</div>
+                    <div id="preview-title" class="text-xs text-amber-400 font-semibold mt-0.5">สายนักสืบ</div>
+                </div>
+            </div>
+
+            <!-- Customization Controls -->
+            <div class="flex flex-col gap-4">
+                <div>
+                    <label class="text-xs font-bold text-slate-300 mb-1 block">ชื่อทนายความ:</label>
+                    <input type="text" id="input-attorney-name" value="ทนายความ" oninput="updateCharacterPreview()" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-sky-500">
+                </div>
+
+                <div>
+                    <label class="text-xs font-bold text-slate-300 mb-1.5 block">เลือกลุคตัวละคร (Avatar):</label>
+                    <div class="flex flex-wrap gap-2" id="avatar-options"></div>
+                </div>
+
+                <div>
+                    <label class="text-xs font-bold text-slate-300 mb-1.5 block">โทนสีชุด/ออร่า:</label>
+                    <div class="flex gap-2" id="color-options"></div>
+                </div>
+
+                <div>
+                    <label class="text-xs font-bold text-slate-300 mb-1.5 block">เลือกสายอาชีพ (Class & Skill):</label>
+                    <select id="select-class" onchange="updateCharacterPreview()" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-sky-300 font-semibold focus:outline-none focus:border-sky-500">
+                        <option value="detective">🔍 สายนักสืบ (แว่นขยายคำใบ้ฟรี +1 ทุก 5 คดี)</option>
+                        <option value="cat">🐱 สายแมวเหมียว (โบนัสฟื้นฟู Trust +10%)</option>
+                        <option value="gourmet">🥐 สายนักกิน (รับเงินรางวัล G เพิ่มขึ้น 20%)</option>
+                        <option value="veteran">⚖️ สายทนายมือเก๋า (ลดบทลงโทษเมื่อตอบผิด 20%)</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <button onclick="startGameWithCustomCharacter()" class="w-full bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white font-bold text-sm py-3.5 rounded-xl shadow-lg transition transform active:scale-95 flex items-center justify-center gap-2">
+            🚀 ยืนยันตัวละคร & เข้าสู่ชั้นศาล!
+        </button>
+    </div>
+
+    <!-- Screen 2: Main Courtroom Game -->
+    <div id="main-game-screen" class="w-full max-w-4xl flex-1 flex flex-col gap-3 hidden">
+        <header class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 mb-1 flex flex-wrap items-center justify-between gap-3 shadow-lg">
+            <div class="flex items-center gap-3">
+                <div class="bg-sky-600 text-white font-bold px-3 py-1 rounded-lg text-sm shadow">
+                    Lv. <span id="player-level">1</span>
+                </div>
+                <div class="flex flex-col">
+                    <div class="text-xs text-slate-400">EXP: <span id="player-exp">0</span>/<span id="player-max-exp">100</span></div>
+                    <div class="w-28 bg-slate-800 h-2 rounded-full overflow-hidden mt-1">
+                        <div id="exp-bar" class="bg-sky-400 h-full transition-all duration-300" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-4">
+                <div id="shield-status-badge" class="hidden items-center gap-1 bg-sky-950 border border-sky-500/50 text-sky-300 px-2.5 py-1 rounded-lg text-xs font-bold shadow animate-pulse">
+                    <span>🛡️</span> เกราะเอสเปรสโซ่ทำงานอยู่
+                </div>
+                <div class="flex items-center gap-1.5 text-amber-400 font-bold text-sm">
+                    <span>💰</span> <span id="player-money">500</span> G
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="text-xs text-slate-400 font-medium">ความน่าเชื่อถือศาล (Trust):</span>
+                    <div class="w-32 bg-slate-800 h-3 rounded-full overflow-hidden border border-slate-700">
+                        <div id="trust-bar" class="bg-emerald-500 h-full transition-all duration-300" style="width: 100%"></div>
+                    </div>
+                    <span id="trust-text" class="text-xs font-bold w-9 text-right">100%</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Courtroom Scene -->
+        <div id="courtroom-scene" class="relative w-full h-64 md:h-80 bg-gradient-to-b from-slate-900 to-slate-900 rounded-2xl border border-slate-800 overflow-hidden shadow-2xl flex flex-col justify-between p-4">
+            <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#38bdf8_1px,transparent_1px)] [background-size:16px_16px]"></div>
+            
+            <div class="self-center z-10 flex flex-col items-center">
+                <div class="text-[11px] bg-slate-800/90 text-sky-300 px-2.5 py-0.5 rounded-full border border-sky-500/30 mb-1 font-semibold">ผู้พิพากษา</div>
+                <div class="w-16 h-12 bg-slate-800 rounded-t-xl border-t border-x border-slate-700 flex items-center justify-center text-xl shadow-inner">⚖️</div>
+            </div>
+
+            <div class="flex justify-between items-center z-10 px-4">
+                <div class="flex flex-col items-center">
+                    <div class="text-[10px] text-rose-400 bg-slate-900/80 px-2 py-0.5 rounded border border-rose-500/30 mb-1">อัยการโจทก์</div>
+                    <div id="prosecutor-sprite" class="w-20 h-24 bg-rose-950/40 border border-rose-500/20 rounded-xl flex items-center justify-center text-3xl shadow-lg anim-idle">🏛️</div>
+                </div>
+
+                <div class="flex flex-col items-center">
+                    <div id="witness-role" class="text-[10px] text-amber-400 bg-slate-900/80 px-2 py-0.5 rounded border border-amber-500/30 mb-1">พยานปากเอก</div>
+                    <div id="witness-sprite" class="w-24 h-28 bg-amber-950/30 border border-amber-500/20 rounded-xl flex items-center justify-center text-4xl shadow-lg anim-idle">🧑‍💼</div>
+                </div>
+
+                <div class="flex flex-col items-center">
+                    <div id="game-player-title" class="text-[10px] text-sky-400 bg-slate-900/80 px-2 py-0.5 rounded border border-sky-500/30 mb-1">ทนายความ</div>
+                    <div id="game-player-sprite" class="w-20 h-24 rounded-xl flex items-center justify-center text-3xl shadow-lg anim-idle border-2">👨‍⚖️</div>
+                </div>
+            </div>
+
+            <div class="absolute top-3 left-3 z-20 bg-slate-900/90 border border-slate-700 px-3 py-1 rounded-lg text-xs font-semibold text-sky-300 shadow flex items-center gap-2">
+                <span>คดีที่ <span id="current-case-num">1</span>: <span id="current-case-title">กำลังโหลด...</span></span>
+            </div>
+
+            <button onclick="backToCustomization()" class="absolute top-3 right-3 z-20 bg-slate-800/80 hover:bg-slate-700 text-slate-300 px-2.5 py-1 rounded-lg text-[11px] border border-slate-700 transition">
+                ⚙️ แต่งตัว
+            </button>
+        </div>
+
+        <!-- Dialogue Box -->
+        <div class="w-full bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-xl flex flex-col gap-2 min-h-[100px] justify-center relative">
+            <div class="flex items-center justify-between">
+                <span id="speaker-name" class="text-xs font-bold text-amber-400 uppercase tracking-wider">พยานปากเอก (โจทก์)</span>
+                <span class="text-[10px] text-slate-500">Endless Viral Cases (Lv. 1-100)</span>
+            </div>
+            <p id="dialogue-text" class="text-sm md:text-base text-slate-200 leading-relaxed">กำลังเตรียมสำนวนคดีในชั้นศาล...</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col gap-3 shadow-lg">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-xs font-bold text-sky-300 uppercase tracking-wider flex items-center gap-1.5">📂 หลักฐานในสำนวนคดี</h3>
+                    <span class="text-[10px] text-slate-400">เลือกหลักฐานที่ขัดแย้ง</span>
+                </div>
+                <div id="evidence-container" class="flex flex-col gap-2 max-h-40 overflow-y-auto pr-1"></div>
+            </div>
+
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col gap-3 shadow-lg">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-xs font-bold text-sky-300 uppercase tracking-wider flex items-center gap-1.5">📜 ข้อกฎหมายที่เกี่ยวข้อง</h3>
+                    <span class="text-[10px] text-slate-400">เลือกมาตราที่ถูกต้อง</span>
+                </div>
+                <div id="law-container" class="flex flex-col gap-2 max-h-40 overflow-y-auto pr-1"></div>
+            </div>
+        </div>
+
+        <div class="flex flex-wrap items-center justify-between gap-3 bg-slate-900 border border-slate-800 rounded-2xl p-3 shadow-lg">
+            <div class="flex items-center gap-2">
+                <button onclick="openInventoryModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold px-4 py-2.5 rounded-xl border border-slate-700 transition flex items-center gap-1.5 shadow">
+                    <span>🎒</span> กระเป๋าไอเทม (<span id="item-count">0</span>)
+                </button>
+                <button onclick="openShopModal()" class="bg-slate-800 hover:bg-slate-700 text-amber-300 text-xs font-bold px-4 py-2.5 rounded-xl border border-slate-700 transition flex items-center gap-1.5 shadow">
+                    <span>🛒</span> ร้านค้าไอเทม
+                </button>
+            </div>
+
+            <button id="objection-btn" onclick="submitObjection()" disabled class="flex-1 max-w-xs bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 hover:to-red-500 disabled:from-slate-800 disabled:to-slate-800 disabled:text-slate-500 text-white font-bold text-sm py-3 px-6 rounded-xl shadow-lg transition transform active:scale-95 flex items-center justify-center gap-2">
+                <span>⚡</span> ยื่นคำคัดค้าน! (Objection!)
+            </button>
+        </div>
+    </div>
+
+    <!-- Modals (z-[60]) -->
+    <div id="objection-banner" class="fixed inset-0 pointer-events-none flex items-center justify-center z-50 opacity-0 transition-opacity duration-300 bg-black/60 backdrop-blur-sm">
+        <div class="transform scale-50 transition-transform duration-300 text-center" id="banner-content">
+            <h1 class="text-5xl md:text-7xl font-black italic tracking-wider text-rose-500 drop-shadow-[0_5px_5px_rgba(0,0,0,0.8)] border-y-4 border-rose-500 py-4 px-8 bg-slate-950/90">
+                คัดค้าน! (OBJECTION!)
+            </h1>
+        </div>
+    </div>
+
+    <div id="game-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[60] hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-lg w-full p-6 shadow-2xl flex flex-col gap-4 text-left max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center gap-3 border-b border-slate-800 pb-3">
+                <div id="modal-icon" class="text-3xl">🎉</div>
+                <h2 id="modal-title" class="text-base font-bold text-white">หัวข้อแจ้งเตือน</h2>
+            </div>
+            <div id="modal-desc" class="text-xs md:text-sm text-slate-300 leading-relaxed space-y-2">
+                <!-- Detailed content populated via JS -->
+            </div>
+            <div class="flex gap-2 justify-end pt-2 border-t border-slate-800">
+                <button id="modal-btn" onclick="closeModal()" class="bg-sky-600 hover:bg-sky-500 text-white font-bold text-xs px-5 py-2.5 rounded-xl transition shadow">ตกลง</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="inventory-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-lg w-full p-6 shadow-2xl flex flex-col gap-4">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                <h3 class="font-bold text-sky-400 text-sm flex items-center gap-2"><span>🎒</span> กระเป๋าไอเทมช่วยเหลือ</h3>
+                <button onclick="closeInventoryModal()" class="text-slate-400 hover:text-white text-lg font-bold">✕</button>
+            </div>
+            <div id="inventory-list" class="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-64 overflow-y-auto pr-1"></div>
+            <div class="text-xs text-slate-400 text-center">คลิกไอเทมเพื่อใช้งานในระหว่างพิจารณาคดี</div>
+        </div>
+    </div>
+
+    <div id="shop-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-lg w-full p-6 shadow-2xl flex flex-col gap-4">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                <h3 class="font-bold text-amber-400 text-sm flex items-center gap-2"><span>🛒</span> ร้านค้าอุปกรณ์ทนายความ</h3>
+                <button onclick="closeShopModal()" class="text-slate-400 hover:text-white text-lg font-bold">✕</button>
+            </div>
+            <div id="shop-list" class="flex flex-col gap-3 max-h-64 overflow-y-auto pr-1"></div>
+            <div class="text-xs text-amber-400/80 text-center font-medium">เงินคงเหลือ: <span id="shop-money-display">500</span> G</div>
+        </div>
+    </div>
+
+    <script>
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playSound(type) {
+            if (audioCtx.state === 'suspended') { audioCtx.resume(); }
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            const now = audioCtx.currentTime;
+            
+            if (type === 'click') {
+                osc.type = 'sine'; osc.frequency.setValueAtTime(400, now); osc.frequency.exponentialRampToValueAtTime(800, now + 0.08);
+                gain.gain.setValueAtTime(0.1, now); gain.gain.linearRampToValueAtTime(0.01, now + 0.08);
+                osc.start(now); osc.stop(now + 0.08);
+            } else if (type === 'correct') {
+                osc.type = 'triangle'; osc.frequency.setValueAtTime(523.25, now); osc.frequency.setValueAtTime(659.25, now + 0.1); osc.frequency.setValueAtTime(783.99, now + 0.2);
+                gain.gain.setValueAtTime(0.15, now); gain.gain.linearRampToValueAtTime(0.01, now + 0.4);
+                osc.start(now); osc.stop(now + 0.4);
+            } else if (type === 'wrong') {
+                osc.type = 'sawtooth'; osc.frequency.setValueAtTime(150, now); osc.frequency.linearRampToValueAtTime(100, now + 0.25);
+                gain.gain.setValueAtTime(0.2, now); gain.gain.linearRampToValueAtTime(0.01, now + 0.25);
+                osc.start(now); osc.stop(now + 0.25);
+            } else if (type === 'objection') {
+                osc.type = 'square'; osc.frequency.setValueAtTime(300, now); osc.frequency.exponentialRampToValueAtTime(600, now + 0.3);
+                gain.gain.setValueAtTime(0.25, now); gain.gain.linearRampToValueAtTime(0.01, now + 0.3);
+                osc.start(now); osc.stop(now + 0.3);
+            }
+        }
+
+        const avatars = ['👨‍⚖️', '👩‍⚖️', '🕵️‍♂️', '🐱', '🕶️', '🧑‍💼', '🦸‍♂️', '🦊'];
+        const colors = [
+            { id: 'sky', bg: 'bg-sky-950/60', border: 'border-sky-500/50' },
+            { id: 'amber', bg: 'bg-amber-950/60', border: 'border-amber-500/50' },
+            { id: 'emerald', bg: 'bg-emerald-950/60', border: 'border-emerald-500/50' },
+            { id: 'purple', bg: 'bg-purple-950/60', border: 'border-purple-500/50' }
+        ];
+
+        let selectedAvatar = '👨‍⚖️';
+        let selectedColor = colors[0];
+
+        let gameState = {
+            customName: 'ทนายความ',
+            customAvatar: '👨‍⚖️',
+            customColor: colors[0],
+            customClass: 'detective',
+            level: 1, exp: 0, maxExp: 100, money: 500, trust: 100, caseNum: 1,
+            isBusy: false, selectedEvidence: null, selectedLaw: null, currentCase: null, shieldActive: false,
+            items: [
+                { id: 'croissant', name: 'ครัวซองต์เนยสด', desc: 'ฟื้นฟู Trust 15%', count: 2, type: 'heal', val: 15 },
+                { id: 'magnifier', name: 'แว่นขยายคำใบ้', desc: 'ไฮไลต์หลักฐานถูกต้อง', count: 1, type: 'hint' }
+            ],
+            shopItems: [
+                { id: 'croissant', name: 'ครัวซองต์เนยสด', desc: 'ฟื้นฟู Trust 15%', price: 100, type: 'heal', val: 15 },
+                { id: 'milk', name: 'นมแมวเลียเข้มข้น', desc: 'ฟื้นฟู Trust 35%', price: 220, type: 'heal', val: 35 },
+                { id: 'espresso', name: 'กาแฟเอสเปรสโซ่', desc: 'ป้องกัน Trust ลด 1 ครั้ง (Shield)', price: 300, type: 'shield' }
+            ]
+        };
+
+        // Real Viral Cases Database (Disclaimer & Detailed Summary Included)
+        const caseTemplates = [
+            {
+                title: "คดีดราม่าปังชาและเครื่องหมายการค้า",
+                disclaimer: "*(หมายเหตุ: คดีนี้ดัดแปลงจากข่าวข้อพิพาทเครื่องหมายการค้าบนโลกออนไลน์ เพื่อความบันเทิงและเสริมความรู้ทางกฎหมายเท่านั้น)*",
+                background: "โจทก์ยื่นฟ้องร้านค้าและเรียกร้องค่าเสียหายหลายล้านบาท โดยอ้างสิทธิการผูกขาดคำว่า 'ปังชา' บนชื่อเมนูและป้ายร้านค้า",
+                cause: "ความเข้าใจคลาดเคลื่อนเรื่องขอบเขตการคุ้มครองเครื่องหมายการค้าคำสามัญที่ใช้เรียกชื่อสินค้าทั่วไป",
+                summary: "ศาลพิพากษายยกฟ้องเนื่องจากคำว่า 'ปังชา' เป็นคำสามัญที่ใช้เรียกขนมปังราดชาไทย ซึ่งบุคคลทั่วไปสามารถใช้ประกอบการค้าได้ ไม่สามารถผูกขาดเป็นเจ้าของสิทธิแต่เพียงผู้เดียวตาม พ.ร.บ.เครื่องหมายการค้า ม.7",
+                witness: "โจทก์อ้างว่าจำเลยเปิดร้านขายขนมปังชาไทย แล้วใช้คำว่า 'ปังชา' ในชื่อร้าน ถือเป็นการละเมิดเครื่องหมายการค้าและเรียกค่าเสียหายหลายล้านบาท!",
+                testimony: "ฉันเป็นเจ้าของสิทธิในคำว่า 'ปังชา' ค่ะ! ร้านจำเลยบังอาจใช้คำว่า 'ปังชา' บนป้ายร้านและเมนู เป็นการละเมิดสิทธิเครื่องหมายการค้าของฉันอย่างชัดเจน!",
+                evidences: [
+                    { id: 'e1', text: 'รูปถ่ายป้ายร้านจำเลยที่มีคำว่า ปังชา' },
+                    { id: 'e2', text: 'หนังสือคำวินิจฉัยกรมทรัพย์สินทางปัญญาว่า คำว่า ปังชา เป็นคำสามัญที่ใครๆ ก็ใช้ได้' },
+                    { id: 'e3', text: 'ใบเสร็จค่าใช้จ่ายการทำการตลาดของโจทก์' }
+                ],
+                correctEvidence: 'e2',
+                laws: [
+                    { id: 'l1', name: 'พ.ร.บ.เครื่องหมายการค้า ม.7 (คำสามัญ/อธิบายลักษณะสินค้า ไม่รับจดทะเบียนและห้ามผูกขาด)', correct: true },
+                    { id: 'l2', name: 'ป.อ. ม.334 (ฐานลักทรัพย์)', correct: false },
+                    { id: 'l3', name: 'ป.อ. ม.341 (ฐานฉ้อโกง)', correct: false },
+                    { id: 'l4', name: 'ป.พ.พ. ม.420 (เรื่องละเมิดทั่วไป)', correct: false }
+                ]
+            },
+            {
+                title: "คดีเพจดังโพสต์รีวิวเตือนภัยร้านอาหาร",
+                disclaimer: "*(หมายเหตุ: คดีนี้ดัดแปลงจากประเด็นข้อพิพาทอินฟลูเอนเซอร์รีวิวร้านอาหารบนโลกออนไลน์)*",
+                background: "ร้านอาหารแห่งหนึ่งฟ้องร้องอินฟลูเอนเซอร์ชื่อดังฐานหมิ่นประมาท ทำให้ยอดขายตกต่ำ หลังโพสต์รีวิวตำหนิเรื่องวัตถุดิบอาหาร",
+                cause: "การแสดงความคิดเห็นหรือติชมสินค้าและบริการตามความเป็นจริง เพื่อคุ้มครองผู้บริโภคในที่สาธารณะ",
+                summary: "การวิพากษ์วิจารณ์ร้านอาหารโดยมีหลักฐานการเข้าใช้บริการจริงและผลตรวจสุขอนามัย ถือเป็นการติชมด้วยความเป็นธรรมอันเป็นวิสัยของประชาชนผู้สุจริต ตาม ป.อ. ม.329 (3) จึงไม่มีความผิดฐานหมิ่นประมาท",
+                witness: "โจทก์อ้างว่าจำเลยเป็นอินฟลูเอนเซอร์ โพสต์รีวิวลงโซเชียลว่าร้านของโจทก์ใช้วัตถุดิบไม่สด ทำให้ร้านเสียชื่อเสียง ขู่ฟ้องหมิ่นประมาท!",
+                testimony: "จำเลยโพสต์ภาพอาหารร้านฉันลงอินเทอร์เน็ต แล้วพิมพ์ว่า 'หมูหมักมีกลิ่นแปลกๆ อย่าหามากิน' ทำให้ยอดขายฉันตกวูบ นี่คือการหมิ่นประมาทใส่ร้ายร้านฉันค่ะ!",
+                evidences: [
+                    { id: 'e1', text: 'ยอดขายที่ลดลงของร้านโจทก์' },
+                    { id: 'e2', text: 'ผลตรวจแล็บสุขอนามัยและสลิปการจ่ายเงินเข้าบริการจริงของผู้บริโภค' },
+                    { id: 'e3', text: 'จำนวนยอดไลก์และยอดแชร์บนโพสต์' }
+                ],
+                correctEvidence: 'e2',
+                laws: [
+                    { id: 'l1', name: 'ป.อ. ม.329 (3) (การติชมด้วยความเป็นธรรม อันเป็นวิสัยของประชาชนย่อมกระทำ - ไม่เป็นความผิดหมิ่นประมาท)', correct: true },
+                    { id: 'l2', name: 'ป.อ. ม.328 (หมิ่นประมาทด้วยการโฆษณา)', correct: false },
+                    { id: 'l3', name: 'พ.ร.บ.คอมพิวเตอร์ ม.14 (1) (นำเข้าข้อมูลเท็จ)', correct: false },
+                    { id: 'l4', name: 'ป.อ. ม.334 (ฐานลักทรัพย์)', correct: false }
+                ]
+            },
+            {
+                title: "คดีไลฟ์สดขายทองคำเปอร์เซ็นต์ต่ำ",
+                witness: "ผู้เสียหายอ้างว่าร้านค้าออนไลน์ไลฟ์สดขายทองคำโดยบอกว่าเป็นทองแท้ 99.99% แต่เมื่อนำไปขายคืนร้านทองอื่น กลับได้ราคาต่ำมากเพราะเปอร์เซ็นต์ทองจริงต่ำกว่าอ้าง",
+                disclaimer: "*(หมายเหตุ: คดีนี้ดัดแปลงจากข่าวดราม่าแม่ค้าไลฟ์สดขายทองคำออนไลน์ที่เป็นกระแสไวรัล)*",
+                background: "ผู้เสียหายซื้อทองคำจากไลฟ์สดออนไลน์ที่โฆษณาว่าเป็นทองคำแท้เปอร์เซ็นต์สูง แต่ผลตรวจสอบพบว่ามีส่วนผสมของทองคำจริงต่ำกว่ามาตรฐานที่โฆษณาอย่างมาก",
+                cause: "การโฆษณาข้อความอันเป็นเท็จหลอกลวงผู้บริโภคในวงกว้างผ่านสื่อสังคมออนไลน์เพื่อแสวงหาประโยชน์",
+                summary: "การแสดงข้อความอันเป็นเท็จต่อประชาชนในการจำหน่ายสินค้าผ่านไลฟ์สด เพื่อจูงใจให้ผู้บริโภคหลงเชื่อซื้อสินค้า เข้าข่ายความผิดฐานฉ้อโกงประชาชน ตาม ป.อ. ม.343",
+                testimony: "ในไลฟ์สดแม่ค้าตะโกนบอกตลอดเลยค่ะว่าเป็นทองแท้ 99.99% ลดราคาพิเศษ! แต่พอฉันนำไปให้ร้านทองใหญ่ตรวจ กลับพบว่ามีทองแท้ผสมอยู่แค่ไม่กี่เปอร์เซ็นต์เองค่ะ!",
+                evidences: [
+                    { id: 'e1', text: 'คลิปวิดีโอบันทึกการไลฟ์สดขณะแม่ค้าโฆษณาเกินจริงว่าเป็นทองแท้ 99.99%' },
+                    { id: 'e2', text: 'กล่องพัสดุและโบว์ผูกของแถม' },
+                    { id: 'e3', text: 'ใบรับประกันสินค้าของทางร้านจำเลย' }
+                ],
+                correctEvidence: 'e1',
+                laws: [
+                    { id: 'l1', name: 'ป.อ. ม.343 (ฉ้อโกงประชาชน โฆษณาข้อความอันเป็นเท็จต่อประชาชน)', correct: true },
+                    { id: 'l2', name: 'ป.อ. ม.334 (ฐานลักทรัพย์)', correct: false },
+                    { id: 'l3', name: 'ป.อ. ม.358 (ทำให้เสียทรัพย์)', correct: false },
+                    { id: 'l4', name: 'ป.อ. ม.339 (ฐานวิ่งราวทรัพย์)', correct: false }
+                ]
+            },
+            {
+                title: "คดีแอบอ้างสแกนหน้าโอนเงินแอปธนาคาร",
+                witness: "โจทก์อ้างว่าจำเลยแอบนำโทรศัพท์มือถือขณะโจทก์นอนหลับ ไปสแกนใบหน้าหลอกระบบเพื่อโอนเงินออกจากบัญชี",
+                disclaimer: "*(หมายเหตุ: คดีนี้ดัดแปลงจากข่าวอาชญากรรมทางเทคโนโลยีเกี่ยวกับการลักลอบเข้าถึงบัญชีธนาคาร)*",
+                background: "ผู้เสียหายตื่นมาพบว่าเงินในบัญชีถูกโอนออกไปในยามวิกาล สืบสวนพบว่าคนใกล้ตัวฉวยโอกาสตอนหลับนำโทรศัพท์มาสแกนใบหน้าผ่านระบบไบโอเมตริกซ์ของแอปธนาคาร",
+                cause: "การทุจริตลักลอบเข้าถึงระบบคอมพิวเตอร์และข้อมูลทางการเงินโดยมิชอบเพื่อยักย้ายทรัพย์สิน",
+                summary: "การลักลอบใช้เครื่องมือทางเทคโนโลยีและข้อมูลชีวภาพของผู้อื่นโดยไม่ได้รับอนุญาตเพื่อโอนเงิน ถือเป็นความผิดฐานเข้าถึงระบบคอมพิวเตอร์โดยมิชอบ ตาม พ.ร.บ.คอมพิวเตอร์ ม.7 และความผิดฐานลักทรัพย์ในเวลากลางคืน ตาม ป.อ. ม.335 (7)",
+                testimony: "ตอนฉันหลับสนิท จำเลยแอบหยิบโทรศัพท์ของฉันไปยกจ่อหน้าฉันเพื่อสแกนใบหน้าผ่านแอปธนาคาร แล้วโอนเงินออกไปเข้าบัญชีตัวเอง 50,000 บาทครับ!",
+                evidences: [
+                    { id: 'e1', text: 'สลิปการโอนเงินช่วงเวลาตี 3 และประวัติการสแกนใบหน้าสำเร็จในเครื่องจำเลย' },
+                    { id: 'e2', text: 'ซองใส่โทรศัพท์มือถือ' },
+                    { id: 'e3', text: 'แชตพูดคุยยืมเงินในอดีต' }
+                ],
+                correctEvidence: 'e1',
+                laws: [
+                    { id: 'l1', name: 'พ.ร.บ.คอมพิวเตอร์ ม.7 และ ป.อ. ม.335 (7) (เข้าถึงระบบคอมพิวเตอร์และลักทรัพย์ในเวลากลางคืน)', correct: true },
+                    { id: 'l2', name: 'ป.อ. ม.341 (ฐานฉ้อโกง)', correct: false },
+                    { id: 'l3', name: 'ป.อ. ม.362 (ฐานบุกรุก)', correct: false },
+                    { id: 'l4', name: 'ป.อ. ม.358 (ทำให้เสียทรัพย์)', correct: false }
+                ]
+            }
+        ];
+
+        function initCustomizationUI() {
+            const avatarContainer = document.getElementById('avatar-options');
+            avatarContainer.innerHTML = '';
+            avatars.forEach(emoji => {
+                const btn = document.createElement('button');
+                btn.className = `text-2xl p-2 rounded-xl border transition ${selectedAvatar === emoji ? 'bg-sky-950 border-sky-400 scale-105 shadow' : 'bg-slate-800 border-slate-700 hover:bg-slate-700'}`;
+                btn.innerText = emoji;
+                btn.onclick = () => {
+                    playSound('click');
+                    selectedAvatar = emoji;
+                    initCustomizationUI();
+                    updateCharacterPreview();
+                };
+                avatarContainer.appendChild(btn);
+            });
+
+            const colorContainer = document.getElementById('color-options');
+            colorContainer.innerHTML = '';
+            colors.forEach(c => {
+                const btn = document.createElement('button');
+                btn.className = `w-8 h-8 rounded-full border-2 transition ${selectedColor.id === c.id ? 'scale-110 border-white shadow-lg' : 'border-transparent opacity-70 hover:opacity-100'} ${c.bg}`;
+                btn.onclick = () => {
+                    playSound('click');
+                    selectedColor = c;
+                    initCustomizationUI();
+                    updateCharacterPreview();
+                };
+                colorContainer.appendChild(btn);
+            });
+
+            updateCharacterPreview();
+        }
+
+        function updateCharacterPreview() {
+            const nameInput = document.getElementById('input-attorney-name').value || 'ทนายความ';
+            const clsSelect = document.getElementById('select-class').value;
+
+            const previewAvatar = document.getElementById('character-avatar-preview');
+            previewAvatar.innerText = selectedAvatar;
+            previewAvatar.className = `w-28 h-32 rounded-2xl flex items-center justify-center text-6xl shadow-xl transition-all duration-300 anim-idle border-2 ${selectedColor.bg} ${selectedColor.border}`;
+
+            document.getElementById('preview-name').innerText = nameInput;
+
+            const classTitles = {
+                detective: '🔍 สายนักสืบ',
+                cat: '🐱 สายแมวเหมียว',
+                gourmet: '🥐 สายนักกิน',
+                veteran: '⚖️ สายทนายมือเก๋า'
+            };
+            document.getElementById('preview-title').innerText = classTitles[clsSelect];
+            document.getElementById('preview-class-badge').innerText = classTitles[clsSelect];
+        }
+
+        function startGameWithCustomCharacter() {
+            playSound('click');
+            gameState.customName = document.getElementById('input-attorney-name').value || 'ทนายความ';
+            gameState.customAvatar = selectedAvatar;
+            gameState.customColor = selectedColor;
+            gameState.customClass = document.getElementById('select-class').value;
+
+            document.getElementById('character-creation-screen').classList.add('hidden');
+            document.getElementById('main-game-screen').classList.remove('hidden');
+
+            const pSprite = document.getElementById('game-player-sprite');
+            pSprite.innerText = gameState.customAvatar;
+            pSprite.className = `w-20 h-24 rounded-xl flex items-center justify-center text-3xl shadow-lg anim-idle border-2 ${gameState.customColor.bg} ${gameState.customColor.border}`;
+            document.getElementById('game-player-title').innerText = gameState.customName;
+
+            if (!gameState.currentCase) {
+                initGame();
+            } else {
+                renderGame();
+            }
+        }
+
+        function backToCustomization() {
+            playSound('click');
+            document.getElementById('main-game-screen').classList.add('hidden');
+            document.getElementById('character-creation-screen').classList.remove('hidden');
+        }
+
+        function generateCase(caseIndex) {
+            const template = caseTemplates[(caseIndex - 1) % caseTemplates.length];
+            return {
+                id: caseIndex,
+                title: template.title,
+                disclaimer: template.disclaimer,
+                background: template.background,
+                cause: template.cause,
+                summary: template.summary,
+                witness: template.witness,
+                testimony: template.testimony,
+                evidences: [...template.evidences].sort(() => Math.random() - 0.5),
+                correctEvidence: template.correctEvidence,
+                laws: [...template.laws].sort(() => Math.random() - 0.5)
+            };
+        }
+
+        function initGame() {
+            gameState.currentCase = generateCase(gameState.caseNum);
+            renderGame();
+        }
+
+        function renderGame() {
+            document.getElementById('player-level').innerText = gameState.level;
+            document.getElementById('player-exp').innerText = gameState.exp;
+            document.getElementById('player-max-exp').innerText = gameState.maxExp;
+            document.getElementById('exp-bar').style.width = `${(gameState.exp / gameState.maxExp) * 100}%`;
+            document.getElementById('player-money').innerText = gameState.money;
+
+            const trustBar = document.getElementById('trust-bar');
+            trustBar.style.width = `${gameState.trust}%`;
+            trustBar.className = `h-full transition-all duration-300 ${gameState.trust > 50 ? 'bg-emerald-500' : gameState.trust > 25 ? 'bg-amber-500' : 'bg-rose-500'}`;
+            document.getElementById('trust-text').innerText = `${gameState.trust}%`;
+
+            // Shield status badge display
+            const shieldBadge = document.getElementById('shield-status-badge');
+            if (gameState.shieldActive) {
+                shieldBadge.classList.remove('hidden');
+                shieldBadge.classList.add('flex');
+            } else {
+                shieldBadge.classList.add('hidden');
+                shieldBadge.classList.remove('flex');
+            }
+
+            document.getElementById('current-case-num').innerText = gameState.caseNum;
+            document.getElementById('current-case-title').innerText = gameState.currentCase.title;
+            document.getElementById('dialogue-text').innerText = gameState.currentCase.testimony;
+
+            const evContainer = document.getElementById('evidence-container');
+            evContainer.innerHTML = '';
+            gameState.currentCase.evidences.forEach(ev => {
+                const isSelected = gameState.selectedEvidence === ev.id;
+                const div = document.createElement('div');
+                div.className = `p-3 rounded-xl border text-xs cursor-pointer transition flex items-center justify-between ${isSelected ? 'bg-sky-950/80 border-sky-500 text-sky-200 shadow' : 'bg-slate-800/60 border-slate-700 hover:bg-slate-800 text-slate-300'}`;
+                div.innerHTML = `<span>${ev.text}</span> <span class="text-xs font-mono">${isSelected ? '✅ เลือก' : '🔍'}</span>`;
+                div.onclick = () => {
+                    playSound('click');
+                    gameState.selectedEvidence = ev.id;
+                    renderGame();
+                    checkObjectionReady();
+                };
+                evContainer.appendChild(div);
+            });
+
+            const lawContainer = document.getElementById('law-container');
+            lawContainer.innerHTML = '';
+            gameState.currentCase.laws.forEach(law => {
+                const isSelected = gameState.selectedLaw === law.id;
+                const div = document.createElement('div');
+                div.className = `p-3 rounded-xl border text-xs cursor-pointer transition flex items-center justify-between ${isSelected ? 'bg-sky-950/80 border-sky-500 text-sky-200 shadow' : 'bg-slate-800/60 border-slate-700 hover:bg-slate-800 text-slate-300'}`;
+                div.innerHTML = `<span>${law.name}</span> <span class="text-xs font-mono">${isSelected ? '✅ เลือก' : '📜'}</span>`;
+                div.onclick = () => {
+                    playSound('click');
+                    gameState.selectedLaw = law.id;
+                    renderGame();
+                    checkObjectionReady();
+                };
+                lawContainer.appendChild(div);
+            });
+
+            const totalItems = gameState.items.reduce((sum, item) => sum + item.count, 0);
+            document.getElementById('item-count').innerText = totalItems;
+            checkObjectionReady();
+        }
+
+        function checkObjectionReady() {
+            const btn = document.getElementById('objection-btn');
+            if (gameState.selectedEvidence && gameState.selectedLaw) {
+                btn.removeAttribute('disabled');
+            } else {
+                btn.setAttribute('disabled', 'true');
+            }
+        }
+
+        function submitObjection() {
+            if (gameState.isBusy || !gameState.selectedEvidence || !gameState.selectedLaw) return;
+            gameState.isBusy = true;
+            playSound('objection');
+
+            const banner = document.getElementById('objection-banner');
+            const content = document.getElementById('banner-content');
+            banner.classList.remove('opacity-0', 'pointer-events-none');
+            content.classList.remove('scale-50');
+            content.classList.add('scale-100', 'anim-shock');
+
+            setTimeout(() => {
+                banner.classList.add('opacity-0', 'pointer-events-none');
+                content.classList.remove('scale-100', 'anim-shock');
+                content.classList.add('scale-50');
+                evaluateAnswer();
+                gameState.isBusy = false;
+            }, 1200);
+        }
+
+        function evaluateAnswer() {
+            const cCase = gameState.currentCase;
+            const isEvidenceCorrect = gameState.selectedEvidence === cCase.correctEvidence;
+            const selectedLawObj = cCase.laws.find(l => l.id === gameState.selectedLaw);
+            const isLawCorrect = selectedLawObj && selectedLawObj.correct;
+
+            const correctEvObj = cCase.evidences.find(e => e.id === cCase.correctEvidence);
+            const correctLawObj = cCase.laws.find(l => l.correct);
+
+            if (isEvidenceCorrect && isLawCorrect) {
+                playSound('correct');
+                document.getElementById('game-player-sprite').innerHTML = '😎';
+                document.getElementById('game-player-sprite').classList.add('anim-idle');
+
+                let earnedExp = 35 + (gameState.level * 2);
+                let earnedMoney = 150 + (gameState.level * 10);
+                if (gameState.customClass === 'gourmet') earnedMoney = Math.floor(earnedMoney * 1.2);
+
+                gameState.exp += earnedExp;
+                gameState.money += earnedMoney;
+
+                if (gameState.exp >= gameState.maxExp) {
+                    gameState.level++;
+                    gameState.exp -= gameState.maxExp;
+                    gameState.maxExp = Math.floor(gameState.maxExp * 1.2);
+                }
+
+                gameState.caseNum++;
+
+                if (gameState.customClass === 'detective' && gameState.caseNum % 5 === 0) {
+                    let hintItem = gameState.items.find(i => i.id === 'magnifier');
+                    if (hintItem) hintItem.count++;
+                }
+
+                const detailedModalHTML = `
+                    <div class="text-xs text-sky-400 font-semibold mb-1">${cCase.title}</div>
+                    <div class="text-[11px] text-slate-400 italic mb-3">${cCase.disclaimer}</div>
+                    
+                    <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-2 mb-3">
+                        <div><strong class="text-amber-300">📌 รายละเอียดคดี:</strong> <span class="text-slate-300">${cCase.background}</span></div>
+                        <div><strong class="text-rose-300">🔍 สาเหตุข้อพิพาท:</strong> <span class="text-slate-300">${cCase.cause}</span></div>
+                        <div><strong class="text-emerald-300">⚖️ สรุปคำพิพากษา:</strong> <span class="text-slate-300">${cCase.summary}</span></div>
+                    </div>
+
+                    <div class="bg-sky-950/40 p-3 rounded-xl border border-sky-500/30 space-y-1 mb-3">
+                        <div class="text-sky-300 font-bold">🎯 เฉลยคำตอบที่ถูกต้อง:</div>
+                        <div>• 📂 <b>หลักฐาน:</b> ${correctEvObj.text}</div>
+                        <div>• 📜 <b>ข้อกฎหมาย:</b> ${correctLawObj.name}</div>
+                    </div>
+
+                    <div class="bg-slate-800/80 p-3 rounded-xl text-xs space-y-1 border border-slate-700">
+                        <div class="text-amber-400 font-bold">🏆 รางวัลที่ได้รับ:</div>
+                        <div>✨ EXP +${earnedExp} | 💰 เงินรางวัล +${earnedMoney} G | 📈 เลเวล: Level ${gameState.level}</div>
+                    </div>
+                `;
+
+                showModal('🎉 ชนะคดีความสำเร็จ!', detailedModalHTML, () => {
+                    gameState.selectedEvidence = null;
+                    gameState.selectedLaw = null;
+                    gameState.currentCase = generateCase(gameState.caseNum);
+                    document.getElementById('game-player-sprite').innerHTML = gameState.customAvatar;
+                    renderGame();
+                    closeModal();
+                });
+            } else {
+                playSound('wrong');
+                document.getElementById('game-player-sprite').classList.add('anim-shock');
+                setTimeout(() => document.getElementById('game-player-sprite').classList.remove('anim-shock'), 500);
+
+                let penalty = 20 + Math.floor(gameState.level * 0.2);
+                if (gameState.customClass === 'veteran') penalty = Math.floor(penalty * 0.8);
+
+                if (gameState.shieldActive) {
+                    gameState.shieldActive = false;
+                    penalty = 0;
+                    showModal('🛡️ โล่ป้องกันทำงาน!', 'เกราะเอสเปรสโซ่ช่วยปกป้องความน่าเชื่อถือศาลจากการคัดค้านผิดพลาดในตานี้!', () => closeModal());
+                } else {
+                    gameState.trust = Math.max(0, gameState.trust - penalty);
+
+                    let reason = "";
+                    if (!isEvidenceCorrect && !isLawCorrect) reason = "เลือกทั้ง <b>หลักฐาน</b> และ <b>ข้อกฎหมาย</b> ผิดพลาดครับ!";
+                    else if (!isEvidenceCorrect) reason = "เลือก <b>หลักฐาน</b> ไม่สอดคล้องกับรูปคดี!";
+                    else reason = "เลือก <b>ข้อกฎหมาย</b> ไม่ถูกต้องตามฐานความผิด!";
+
+                    // Advance to next case immediately on wrong answer as requested
+                    gameState.caseNum++;
+
+                    const failedModalHTML = `
+                        <div class="text-xs text-rose-400 font-semibold mb-2">${reason} (เปลี่ยนเป็นคดีถัดไปทันที)</div>
+                        
+                        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-2 mb-3">
+                            <div><strong class="text-amber-300">📌 รายละเอียดคดี:</strong> <span class="text-slate-300">${cCase.background}</span></div>
+                            <div><strong class="text-emerald-300">⚖️ ข้อเท็จจริงทางกฎหมายที่ถูกต้อง:</strong> <span class="text-slate-300">${cCase.summary}</span></div>
+                        </div>
+
+                        <div class="bg-rose-950/40 p-3 rounded-xl border border-rose-500/30 space-y-1 mb-3">
+                            <div class="text-rose-300 font-bold">💡 เฉลยคำตอบที่ถูกต้องสำหรับคดีนี้:</div>
+                            <div>• 📂 <b>หลักฐาน:</b> ${correctEvObj.text}</div>
+                            <div>• 📜 <b>ข้อกฎหมาย:</b> ${correctLawObj.name}</div>
+                        </div>
+
+                        <div class="text-xs text-slate-400 text-center">
+                            ความน่าเชื่อถือศาลลดลง <b>-${penalty}%</b> (เหลือ ${gameState.trust}%)
+                        </div>
+                    `;
+
+                    if (gameState.trust <= 0) {
+                        showModal(
+                            '❌ ศาลตัดสินยกคำร้อง (แพ้คดี)',
+                            `คุณคัดค้านผิดพลาดติดต่อกันจนความน่าเชื่อถือหมดลง<br><br>${failedModalHTML}`,
+                            () => {
+                                gameState.trust = 100;
+                                gameState.selectedEvidence = null;
+                                gameState.selectedLaw = null;
+                                gameState.currentCase = generateCase(gameState.caseNum);
+                                renderGame();
+                                closeModal();
+                            }
+                        );
+                    } else {
+                        showModal(
+                            '⚠️ คำคัดค้านถูกปัดตก!',
+                            failedModalHTML,
+                            () => {
+                                gameState.selectedEvidence = null;
+                                gameState.selectedLaw = null;
+                                gameState.currentCase = generateCase(gameState.caseNum);
+                                renderGame();
+                                closeModal();
+                            }
+                        );
+                    }
+                }
+            }
+        }
+
+        function showModal(title, desc, callback) {
+            document.getElementById('modal-title').innerText = title;
+            document.getElementById('modal-desc').innerHTML = desc;
+            document.getElementById('modal-btn').onclick = callback;
+            document.getElementById('game-modal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('game-modal').classList.add('hidden');
+        }
+
+        function openInventoryModal() {
+            playSound('click');
+            const list = document.getElementById('inventory-list');
+            list.innerHTML = '';
+            gameState.items.forEach(item => {
+                if (item.count > 0) {
+                    const div = document.createElement('div');
+                    div.className = 'bg-slate-800 border border-slate-700 p-3 rounded-xl flex flex-col justify-between gap-2';
+                    div.innerHTML = `<div><div class="font-bold text-xs text-sky-300">${item.name} (มี ${item.count})</div><div class="text-[11px] text-slate-400">${item.desc}</div></div><button onclick="useItem('${item.id}')" class="bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold py-1.5 px-3 rounded-lg transition self-end">ใช้งาน</button>`;
+                    list.appendChild(div);
+                }
+            });
+            document.getElementById('inventory-modal').classList.remove('hidden');
+        }
+
+        function closeInventoryModal() { document.getElementById('inventory-modal').classList.add('hidden'); }
+
+        function useItem(itemId) {
+            playSound('click');
+            const item = gameState.items.find(i => i.id === itemId);
+            if (!item || item.count <= 0) return;
+
+            if (item.type === 'heal') {
+                let healVal = item.val;
+                if (gameState.customClass === 'cat') healVal += 10;
+                gameState.trust = Math.min(100, gameState.trust + healVal);
+                item.count--;
+                showModal('✨ ใช้ไอเทมสำเร็จ', `ฟื้นฟู Trust +${healVal}% สำเร็จ!`, () => closeModal());
+            } else if (item.type === 'hint') {
+                item.count--;
+                const correctEv = gameState.currentCase.evidences.find(e => e.id === gameState.currentCase.correctEvidence);
+                showModal('🔍 แว่นขยายคำใบ้', `คำใบ้หลักฐานที่ถูกต้องคือ:<br><b>"${correctEv.text}"</b>`, () => closeModal());
+            } else if (item.type === 'shield') {
+                item.count--;
+                gameState.shieldActive = true;
+                showModal('🛡️ ใช้ไอเทมเกราะสำเร็จ', 'เปิดใช้งานเกราะป้องกันความน่าเชื่อถือสำหรับการคัดค้านครั้งถัดไปเรียบร้อยแล้ว!', () => closeModal());
+            }
+            renderGame();
+            openInventoryModal();
+        }
+
+        function openShopModal() {
+            playSound('click');
+            document.getElementById('shop-money-display').innerText = gameState.money;
+            const list = document.getElementById('shop-list');
+            list.innerHTML = '';
+            gameState.shopItems.forEach(shopItem => {
+                const div = document.createElement('div');
+                div.className = 'bg-slate-800 border border-slate-700 p-3 rounded-xl flex items-center justify-between';
+                div.innerHTML = `<div><div class="font-bold text-xs text-amber-300">${shopItem.name}</div><div class="text-[11px] text-slate-400">${shopItem.desc}</div><div class="text-[11px] text-amber-400 font-semibold mt-1">ราคา: ${shopItem.price} G</div></div><button onclick="buyItem('${shopItem.id}', ${shopItem.price})" class="bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold py-2 px-4 rounded-xl transition shadow">ซื้อ</button>`;
+                list.appendChild(div);
+            });
+            document.getElementById('shop-modal').classList.add('hidden'); // Fix toggle
+            document.getElementById('shop-modal').classList.remove('hidden');
+        }
+
+        function closeShopModal() { document.getElementById('shop-modal').classList.add('hidden'); }
+
+        function buyItem(itemId, price) {
+            if (gameState.money < price) {
+                playSound('wrong');
+                showModal('💰 เงินไม่พอ!', 'เงิน (G) ไม่พอซื้อไอเทมนี้', () => closeModal());
+                return;
+            }
+            playSound('correct');
+            gameState.money -= price;
+            let existing = gameState.items.find(i => i.id === itemId);
+            if (existing) existing.count++;
+            else {
+                const shopDef = gameState.shopItems.find(s => s.id === itemId);
+                gameState.items.push({ id: shopDef.id, name: shopDef.name, desc: shopDef.desc, count: 1, type: shopDef.type, val: shopDef.val });
+            }
+            document.getElementById('shop-money-display').innerText = gameState.money;
+            renderGame();
+            showModal('🛒 ซื้อไอเทมสำเร็จ', 'ได้รับไอเทมเข้ากระเป๋าเรียบร้อย!', () => closeModal());
+        }
+
+        window.onload = initCustomizationUI;
+    </script>
+</body>
+</html>
+
+```
