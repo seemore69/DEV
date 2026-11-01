@@ -81,11 +81,21 @@
             border-radius: 10px;
             font-size: 13px;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            flex-direction: column;
+            gap: 3px;
         }
         .rank-item.top-1 { background: #fffbe6; border-color: #ffe58f; }
-        
+        .rank-row-top {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 700;
+            color: var(--navy);
+        }
+        .rank-row-sub {
+            font-size: 12px;
+            color: var(--muted);
+        }
+
         .header {
             padding: 19px 16px 15px;
             text-align: center; color: white;
@@ -218,7 +228,6 @@
                 <input type="text" id="player-name" class="input-control" placeholder="กรอกชื่อของคุณ">
             </div>
             
-            <!-- เปลี่ยนจาก Dropdown เป็น Text Input ให้พิมพ์เองได้อิสระ -->
             <div class="input-group">
                 <label for="player-rank">ตำแหน่ง / ยศ:</label>
                 <input type="text" id="player-rank" class="input-control" placeholder="เช่น ผู้บัญชาการ, ผู้กอง, สารวัตร">
@@ -333,22 +342,31 @@
 
     function loadLocalRankSidebar() {
         const rankList = document.getElementById('rank-list');
-        const savedName = localStorage.getItem('nakornban_last_name') || "ผู้เล่นทั่วไป";
-        const savedRankTitle = localStorage.getItem('nakornban_last_rank') || "ราษฎร";
+        const savedName = localStorage.getItem('nakornban_last_name') || "ยังไม่มีผู้สอบ";
+        const savedRankTitle = localStorage.getItem('nakornban_last_rank') || "-";
         const savedScore = localStorage.getItem('nakornban_high_score') || 0;
 
         rankList.innerHTML = `
             <div class="rank-item top-1">
-              <span>🥇 1. ${savedName} (${savedRankTitle})</span>
-              <strong>${savedScore}/20</strong>
+              <div class="rank-row-top">
+                <span>🥇 1. ${savedName}</span>
+                <span>${savedScore}/20 คะแนน</span>
+              </div>
+              <div class="rank-row-sub">ตำแหน่ง: ${savedRankTitle}</div>
             </div>
             <div class="rank-item">
-              <span>🥈 2. ขุนสิทธิ์ (จ่าพระนครบาล)</span>
-              <strong>15/20</strong>
+              <div class="rank-row-top">
+                <span>🥈 2. ขุนสิทธิ์</span>
+                <span>15/20 คะแนน</span>
+              </div>
+              <div class="rank-row-sub">ตำแหน่ง: จ่าพระนครบาล</div>
             </div>
             <div class="rank-item">
-              <span>🥉 3. หลวงศรียศ (ขุนนาง)</span>
-              <strong>14/20</strong>
+              <div class="rank-row-top">
+                <span>🥉 3. หลวงศรียศ</span>
+                <span>14/20 คะแนน</span>
+              </div>
+              <div class="rank-row-sub">ตำแหน่ง: ขุนนาง</div>
             </div>
         `;
     }
