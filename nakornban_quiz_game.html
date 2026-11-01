@@ -3,728 +3,699 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>กรมพระนครบาล : แบบทดสอบความรู้กฎหมาย</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts: Silkscreen (Pixel font) & Prompt -->
-    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600;700;800&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
+    <title>แบบทดสอบกฎหมาย กรมพระนครบาล (Cyber Pixel Blue)</title>
     <style>
-        body {
-            font-family: 'Prompt', sans-serif;
-            background-color: #1a1005;
-            color: #4a2c00;
+        @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700;800&family=Silkscreen:wght@400;700&display=swap');
+
+        * {
+            box-sizing: border-box;
             user-select: none;
             -webkit-user-select: none;
         }
 
-        .font-pixel {
-            font-family: 'Silkscreen', cursive, sans-serif;
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #030712;
+            font-family: 'Sarabun', sans-serif;
+            color: #e0f2fe;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
         }
 
-        .pixel-box {
-            background-color: #fceabb;
-            border: 4px solid #4a2c00;
-            box-shadow: 0 6px 0 0 #2a1800, inset 0 -4px 0 0 #d8a25e;
+        #game-container {
+            width: 100%;
+            max-width: 480px;
+            height: 92vh;
+            max-height: 880px;
+            background: linear-gradient(180deg, #0f172a 0%, #030712 100%);
+            border: 4px solid #38bdf8;
+            box-shadow: 0 0 25px rgba(56, 189, 248, 0.4), inset 0 0 15px rgba(56, 189, 248, 0.2);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+            border-radius: 12px;
+        }
+
+        .header {
+            background: rgba(15, 23, 42, 0.95);
+            border-bottom: 3px solid #0284c7;
+            padding: 12px 10px;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 19px;
+            font-weight: 800;
+            color: #7dd3fc;
+            text-shadow: 0 0 10px rgba(56, 189, 248, 0.6), 2px 2px 0px #030712;
+            letter-spacing: 0.5px;
+        }
+
+        .header-sub {
+            font-size: 11px;
+            color: #93c5fd;
+            margin-top: 2px;
+            font-weight: 600;
+        }
+
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 16px;
+            background: rgba(3, 7, 18, 0.8);
+            border-bottom: 2px solid #1e293b;
+            font-size: 13px;
+            font-weight: 700;
+            color: #38bdf8;
+            font-family: 'Silkscreen', cursive;
+        }
+
+        .stage-view {
+            flex: 1;
+            position: relative;
+            background: #020617;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        #pixel-canvas {
+            width: 100%;
+            height: 100%;
+            image-rendering: pixelated;
+        }
+
+        .content-area {
+            background: #0f172a;
+            border-top: 4px solid #0284c7;
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            min-height: 350px;
+            box-shadow: inset 0 5px 15px rgba(0,0,0,0.4);
+        }
+
+        .question-box {
+            background: #030712;
+            border: 2px solid #0284c7;
+            padding: 12px 14px;
+            border-radius: 8px;
+            color: #f0f9ff;
+            font-size: 14px;
+            font-weight: 600;
+            line-height: 1.5;
+            min-height: 72px;
+            box-shadow: inset 0 0 8px rgba(2, 132, 199, 0.3), 0 4px 6px rgba(0,0,0,0.3);
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 8px;
+        }
+
+        .btn-option {
+            background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+            border: 2px solid #0284c7;
+            color: #e0f2fe;
+            padding: 10px 14px;
+            font-size: 13px;
+            font-weight: 600;
+            text-align: left;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.15s ease;
+            display: flex;
+            align-items: center;
+            font-family: 'Sarabun', sans-serif;
+            box-shadow: 0 4px 0 #030712, inset 0 1px 0 rgba(255,255,255,0.1);
             position: relative;
         }
 
-        .pixel-box-dark {
-            background-color: #2b1704;
-            border: 4px solid #d8a25e;
-            box-shadow: 0 6px 0 0 #120900;
-            color: #fef3c7;
-        }
-
-        .pixel-btn {
-            background-color: #f59e0b;
-            color: #381a00;
-            border: 4px solid #381a00;
-            box-shadow: 0 5px 0 0 #78350f;
-            transition: all 0.1s ease;
-            cursor: pointer;
-            text-align: center;
-            font-weight: 700;
-            display: inline-block;
-        }
-
-        .pixel-btn:hover:not(:disabled) {
-            background-color: #fbbf24;
+        .btn-option:hover {
+            background: linear-gradient(180deg, #0284c7 0%, #0369a1 100%);
+            border-color: #38bdf8;
+            color: #ffffff;
             transform: translateY(-2px);
-            box-shadow: 0 7px 0 0 #78350f;
+            box-shadow: 0 6px 0 #030712, 0 0 12px rgba(56, 189, 248, 0.5);
         }
 
-        .pixel-btn:active:not(:disabled) {
+        .btn-option:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #030712;
+        }
+
+        .btn-option.correct {
+            background: linear-gradient(180deg, #16a34a 0%, #15803d 100%) !important;
+            border-color: #4ade80 !important;
+            color: #fff !important;
+            box-shadow: 0 4px 0 #052e16, 0 0 15px rgba(74, 222, 128, 0.6) !important;
+        }
+
+        .btn-option.wrong {
+            background: linear-gradient(180deg, #dc2626 0%, #b91c1c 100%) !important;
+            border-color: #f87171 !important;
+            color: #fff !important;
+            box-shadow: 0 4px 0 #450a0a, 0 0 15px rgba(248, 113, 113, 0.6) !important;
+        }
+
+        .screen {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(3, 7, 18, 0.96);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 24px;
+            text-align: center;
+            z-index: 10;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .btn-start {
+            background: linear-gradient(180deg, #0284c7 0%, #0369a1 100%);
+            border: 3px solid #7dd3fc;
+            color: #fff;
+            padding: 14px 28px;
+            font-size: 16px;
+            font-weight: 800;
+            cursor: pointer;
+            border-radius: 8px;
+            box-shadow: 0 6px 0 #0c4a6e, 0 0 18px rgba(56, 189, 248, 0.5);
+            margin-top: 15px;
+            font-family: 'Sarabun', sans-serif;
+            transition: all 0.15s ease;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-start:hover {
+            background: linear-gradient(180deg, #38bdf8 0%, #0284c7 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 0 #0c4a6e, 0 0 25px rgba(56, 189, 248, 0.8);
+        }
+
+        .btn-start:active {
             transform: translateY(4px);
-            box-shadow: 0 1px 0 0 #78350f;
+            box-shadow: 0 2px 0 #0c4a6e;
         }
 
-        .pixel-btn-correct {
-            background-color: #22c55e !important;
-            color: #ffffff !important;
-            border-color: #14532d !important;
-            box-shadow: 0 5px 0 0 #14532d !important;
+        .feedback-banner {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 10px 24px;
+            font-size: 18px;
+            font-weight: 800;
+            border-radius: 8px;
+            border: 2px solid #fff;
+            z-index: 5;
+            pointer-events: none;
+            box-shadow: 0 0 20px rgba(0,0,0,0.8);
         }
 
-        .pixel-btn-wrong {
-            background-color: #ef4444 !important;
-            color: #ffffff !important;
-            border-color: #7f1d1d !important;
-            box-shadow: 0 5px 0 0 #7f1d1d !important;
-        }
+        .feedback-correct { background: #16a34a; color: #dcfce7; border-color: #4ade80; }
+        .feedback-wrong { background: #dc2626; color: #fee2e2; border-color: #f87171; }
 
-        .pixel-progress-bg {
-            background: #4a2c00;
-            border: 3px solid #2a1800;
-        }
-        
-        .pixel-progress-fill {
-            background: linear-gradient(90deg, #f59e0b, #fbbf24);
-            height: 100%;
-            transition: width 0.3s ease-out;
+        .badge-icon {
+            display: inline-block;
+            vertical-align: middle;
+            margin: 0 4px;
         }
     </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-2 sm:p-4">
+<body>
 
-    <!-- Main Game Container -->
-    <div class="w-full max-w-lg pixel-box p-4 sm:p-6 rounded-lg text-amber-950 overflow-hidden relative shadow-2xl">
-        
-        <!-- Header Banner -->
-        <div class="pixel-box-dark text-center p-3 mb-4 rounded border-amber-500">
-            <div class="flex justify-center items-center gap-2 mb-1">
-                <svg class="w-7 h-7 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 2L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-5.45 9-12V5l-9-3zm0 4a3 3 0 110 6 3 3 0 010-6zm0 14c-2.67 0-8 1.34-8 4v1h16v-1c0-2.66-5.33-4-8-4z"/>
-                </svg>
-                <h1 class="text-xl sm:text-2xl font-extrabold tracking-wider text-amber-300 drop-shadow">
-                    กรมพระนครบาล
-                </h1>
-                <svg class="w-7 h-7 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 2L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-5.45 9-12V5l-9-3zm0 4a3 3 0 110 6 3 3 0 010-6zm0 14c-2.67 0-8 1.34-8 4v1h16v-1c0-2.66-5.33-4-8-4z"/>
-                </svg>
-            </div>
-            <p class="text-xs text-amber-200 font-medium">แบบทดสอบความรู้กฎหมายและกฎเหล็กการใช้กุญแจมือ (10 ข้อ)</p>
+<div id="game-container">
+    <div class="header">
+        <div style="display: flex; justify-content: center; align-items: center; gap: 6px;">
+            <!-- Cool Neon Handcuffs & Sword SVG Badge -->
+            <svg class="badge-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7dd3fc" stroke-width="2">
+                <path d="M12 2L3 7v6c0 5.5 3.8 10.7 9 12 5.2-1.3 9-6.5 9-12V7l-9-5z"/>
+                <path d="M12 7v10M8 11h8" stroke="#38bdf8"/>
+            </svg>
+            <h1>กรมพระนครบาล</h1>
+            <svg class="badge-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7dd3fc" stroke-width="2">
+                <path d="M12 2L3 7v6c0 5.5 3.8 10.7 9 12 5.2-1.3 9-6.5 9-12V7l-9-5z"/>
+                <path d="M12 7v10M8 11h8" stroke="#38bdf8"/>
+            </svg>
         </div>
-
-        <!-- SCREEN 1: START / COVER SCREEN -->
-        <div id="start-screen" class="text-center py-4">
-            <div class="my-6 relative flex justify-center">
-                <div class="w-32 h-32 bg-amber-200 border-4 border-amber-900 rounded-full flex items-center justify-center overflow-hidden shadow-inner relative">
-                    <!-- SVG Pixel Officer -->
-                    <svg class="w-24 h-24" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M20 20H44V24H20V20Z" fill="#78350F"/>
-                        <path d="M24 14H40V20H24V14Z" fill="#B45309"/>
-                        <path d="M30 8H34V14H30V8Z" fill="#FBBF24"/>
-                        <path d="M22 24H42V40H22V24Z" fill="#FDBA74"/>
-                        <rect x="26" y="28" width="4" height="6" fill="#1E293B"/>
-                        <rect x="34" y="28" width="4" height="6" fill="#1E293B"/>
-                        <path d="M26 36H38V38H26V36Z" fill="#451A03"/>
-                        <path d="M18 40H46V56H18V40Z" fill="#991B1B"/>
-                        <path d="M30 40H34V56H30V40Z" fill="#FBBF24"/>
-                    </svg>
-                </div>
-            </div>
-
-            <div class="bg-amber-100/90 p-4 rounded border-2 border-amber-800 text-left text-sm mb-6 space-y-2">
-                <p class="font-bold text-amber-900 border-b border-amber-300 pb-1">📜 กฎระเบียบแบบทดสอบ:</p>
-                <p>• ทำแบบทดสอบทั้งหมด <strong>10 ข้อ</strong> ต่อเนื่องจนจบ</p>
-                <p>• เกณฑ์การสอบผ่าน: ต้องได้คะแนนตั้งแต่ <strong>7 ข้อขึ้นไป (70%)</strong></p>
-                <p>• หากทำผ่าน: รับคำชมเชยจากกรมพระนครบาล 🎉</p>
-                <p>• หากไม่ผ่าน: ระวังจะถูกนครบาลดุร้ายลงโทษฟันดาบ! ⚔️</p>
-            </div>
-
-            <button id="start-btn" type="button" class="pixel-btn w-full py-4 text-lg sm:text-xl rounded text-amber-950 font-black tracking-wider uppercase cursor-pointer">
-                ⚔️ คลิกเพื่อเริ่ม (CLICK TO START) ⚔️
-            </button>
-        </div>
-
-        <!-- SCREEN 2: QUIZ SCREEN -->
-        <div id="quiz-screen" class="hidden">
-            <!-- HUD / Status Bar -->
-            <div class="flex justify-between items-center mb-3 text-xs sm:text-sm font-bold bg-amber-200/90 p-2.5 rounded border-2 border-amber-800">
-                <div class="font-pixel text-amber-900">
-                    ข้อที่ <span id="current-q-num" class="text-amber-700 text-base">1</span>/10
-                </div>
-
-                <div class="flex items-center gap-1 text-amber-900">
-                    <span>คะแนนสะสม:</span>
-                    <span id="score-val" class="text-green-700 font-pixel text-base">0</span>
-                    <span>ข้อ</span>
-                </div>
-            </div>
-
-            <!-- Progress Bar -->
-            <div class="w-full pixel-progress-bg h-3 mb-4 rounded-full overflow-hidden">
-                <div id="progress-fill" class="pixel-progress-fill" style="width: 10%;"></div>
-            </div>
-
-            <!-- Question Card -->
-            <div class="pixel-box-dark p-4 rounded mb-4 text-center min-h-[110px] flex items-center justify-center">
-                <h2 id="question-text" class="text-base sm:text-lg font-bold leading-snug text-amber-100">
-                    คำถามจะปรากฏที่นี่...
-                </h2>
-            </div>
-
-            <!-- Answer Options -->
-            <div id="options-container" class="grid grid-cols-1 gap-2.5 mb-4">
-                <!-- Buttons injected by JS -->
-            </div>
-
-            <!-- Instant Feedback Banner -->
-            <div id="feedback-banner" class="hidden text-center p-2.5 rounded text-xs sm:text-sm font-bold border-2">
-                <!-- Feedback message injected by JS -->
-            </div>
-        </div>
-
-        <!-- SCREEN 3: RESULTS SCREEN WITH PIXEL ANIMATION -->
-        <div id="result-screen" class="hidden text-center py-2">
-            <h2 id="result-title" class="text-2xl font-black text-amber-900 mb-1">สรุปผลการสอบนครบาล</h2>
-
-            <!-- Canvas Display for Pixel Character Animation -->
-            <div class="my-3 flex justify-center">
-                <div class="pixel-box-dark p-2 rounded border-4 border-amber-800 bg-amber-950 flex flex-col items-center">
-                    <canvas id="pixel-anim-canvas" width="220" height="150" class="rounded bg-slate-900"></canvas>
-                </div>
-            </div>
-            
-            <div id="rank-badge" class="my-2 inline-block px-4 py-1.5 bg-amber-300 border-4 border-amber-900 rounded-lg text-base sm:text-lg font-black text-amber-950 shadow">
-                ตำแหน่ง: ขุนปราบพระนคร
-            </div>
-
-            <div class="pixel-box p-3 my-3 rounded text-left space-y-1.5 text-sm">
-                <div class="flex justify-between items-center border-b border-amber-300 pb-1.5">
-                    <span class="font-bold">คะแนนรวมที่ได้:</span>
-                    <span id="final-score" class="font-pixel text-lg text-amber-800">0 / 10</span>
-                </div>
-                <div class="flex justify-between items-center border-b border-amber-300 pb-1.5">
-                    <span class="font-bold">คิดเป็นเปอร์เซ็นต์:</span>
-                    <span id="final-percent" class="font-bold text-amber-900">0%</span>
-                </div>
-                <div class="flex justify-between items-center">
-                    <span class="font-bold">ผลการทดสอบ:</span>
-                    <span id="final-status" class="font-bold">ผ่านเกณฑ์</span>
-                </div>
-            </div>
-
-            <div id="result-evaluation" class="text-xs sm:text-sm text-amber-900 italic mb-4 bg-amber-100 p-2.5 rounded border border-amber-400">
-                <!-- Evaluation quote injected by JS -->
-            </div>
-
-            <button id="restart-btn" type="button" class="pixel-btn w-full py-3 text-base sm:text-lg rounded text-amber-950 font-black tracking-wider uppercase cursor-pointer">
-                🔄 ทำแบบทดสอบอีกครั้ง
-            </button>
-        </div>
-
-        <!-- Footer -->
-        <div class="mt-4 pt-3 border-t-2 border-amber-900/30 text-center text-[10px] sm:text-xs text-amber-800">
-            กรมพระนครบาล - ผู้รักษาความสงบเรียบร้อยแห่งพระนครศรีอโยธยา
-        </div>
+        <div class="header-sub">แบบทดสอบความรู้กฎหมาย & กฎเหล็กกุญแจมือ</div>
     </div>
 
-    <!-- Game Logic & Audio JavaScript -->
-    <script>
-        class PixelAudio {
-            constructor() {
-                this.ctx = null;
-            }
+    <div class="status-bar">
+        <span id="progress-text">ข้อที่: 01/20</span>
+        <span id="score-text">SCORE: 00</span>
+    </div>
 
-            init() {
-                if (!this.ctx) {
-                    this.ctx = new (window.AudioContext || window.webkitAudioContext)();
-                }
-                if (this.ctx && this.ctx.state === 'suspended') {
-                    this.ctx.resume();
-                }
-            }
+    <div class="stage-view">
+        <svg id="pixel-canvas" viewBox="0 0 160 140" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <style>.pixel { shape-rendering: crispEdges; }</style>
+            </defs>
 
-            playBleep(freq = 440, type = 'square', duration = 0.1) {
-                this.init();
-                if (!this.ctx) return;
-                try {
-                    const osc = this.ctx.createOscillator();
-                    const gain = this.ctx.createGain();
-                    osc.type = type;
-                    osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
-                    gain.gain.setValueAtTime(0.1, this.ctx.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + duration);
-                    osc.connect(gain);
-                    gain.connect(this.ctx.destination);
-                    osc.start();
-                    osc.stop(this.ctx.currentTime + duration);
-                } catch (e) {}
-            }
+            <!-- Sky & Cyber Ayutthaya Temples -->
+            <rect class="pixel" x="0" y="0" width="160" height="90" fill="#030712"/>
 
-            playCorrect() {
-                this.init();
-                [523.25, 659.25, 783.99, 1046.50].forEach((f, i) => {
-                    setTimeout(() => this.playBleep(f, 'triangle', 0.12), i * 80);
-                });
-            }
+            <!-- Moon & Glowing Aura -->
+            <circle cx="135" cy="22" r="12" fill="#38bdf8" opacity="0.25"/>
+            <circle cx="135" cy="22" r="8" fill="#e0f2fe"/>
+            <circle cx="132" cy="20" r="7" fill="#030712"/>
 
-            playWrong() {
-                this.init();
-                [220, 196, 164].forEach((f, i) => {
-                    setTimeout(() => this.playBleep(f, 'sawtooth', 0.15), i * 100);
-                });
-            }
+            <!-- Cloud Pixels -->
+            <rect class="pixel" x="20" y="15" width="24" height="4" fill="#1e293b"/>
+            <rect class="pixel" x="26" y="11" width="12" height="4" fill="#1e293b"/>
+            <rect class="pixel" x="80" y="25" width="30" height="4" fill="#1e293b"/>
 
-            playClick() {
-                this.init();
-                this.playBleep(600, 'square', 0.05);
-            }
+            <!-- Cyber Ayutthaya Pagodas Silhouette -->
+            <polygon class="pixel" points="10,90 18,45 26,90" fill="#0f172a"/>
+            <polygon class="pixel" points="22,90 35,22 48,90" fill="#1e293b"/>
+            <polygon class="pixel" points="40,90 44,15 48,90" fill="#38bdf8" opacity="0.8"/>
+            <polygon class="pixel" points="68,90 85,12 102,90" fill="#0f172a"/>
+            <polygon class="pixel" points="83,90 85,8 87,90" fill="#0284c7"/>
+            <polygon class="pixel" points="120,90 135,30 150,90" fill="#1e293b"/>
 
-            playVictory() {
-                this.init();
-                const notes = [440, 554.37, 659.25, 880, 783.99, 880, 1046.5];
-                notes.forEach((f, i) => {
-                    setTimeout(() => this.playBleep(f, 'triangle', 0.2), i * 140);
-                });
-            }
+            <!-- Neon City Ground Line -->
+            <rect class="pixel" x="0" y="90" width="160" height="6" fill="#0284c7"/>
+            <rect class="pixel" x="0" y="96" width="160" height="44" fill="#090d16"/>
+            <!-- Grid Lines on Ground -->
+            <line x1="0" y1="110" x2="160" y2="110" stroke="#1e293b" stroke-width="1"/>
+            <line x1="0" y1="125" x2="160" y2="125" stroke="#1e293b" stroke-width="1"/>
 
-            playSlash() {
-                this.init();
-                if (!this.ctx) return;
-                try {
-                    const osc = this.ctx.createOscillator();
-                    const gain = this.ctx.createGain();
-                    osc.type = 'sawtooth';
-                    osc.frequency.setValueAtTime(800, this.ctx.currentTime);
-                    osc.frequency.exponentialRampToValueAtTime(100, this.ctx.currentTime + 0.2);
-                    gain.gain.setValueAtTime(0.2, this.ctx.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.2);
-                    osc.connect(gain);
-                    gain.connect(this.ctx.destination);
-                    osc.start();
-                    osc.stop(this.ctx.currentTime + 0.2);
-                } catch (e) {}
-            }
+            <!-- Animated Cute & Cool Pixel Character Group -->
+            <g id="character-group">
+                <!-- Cute Normal Nakornban -->
+                <g id="char-normal">
+                    <!-- Headband / Hat -->
+                    <path class="pixel" d="M72,52 L88,52 L85,42 L75,42 Z" fill="#0284c7"/>
+                    <rect class="pixel" x="70" y="52" width="20" height="4" fill="#38bdf8"/>
+                    <!-- Cute Big Eyes Head -->
+                    <rect class="pixel" x="73" y="56" width="14" height="10" fill="#ffdbac"/>
+                    <!-- Big Anime Style Eyes -->
+                    <rect class="pixel" x="75" y="59" width="3" height="4" fill="#030712"/>
+                    <rect class="pixel" x="82" y="59" width="3" height="4" fill="#030712"/>
+                    <rect class="pixel" x="75" y="59" width="1" height="1" fill="#fff"/>
+                    <rect class="pixel" x="82" y="59" width="1" height="1" fill="#fff"/>
+                    <!-- Cute Blush -->
+                    <rect class="pixel" x="74" y="63" width="2" height="1" fill="#f43f5e"/>
+                    <rect class="pixel" x="84" y="63" width="2" height="1" fill="#f43f5e"/>
+                    <!-- Body Armor & Shoulder Pads -->
+                    <rect class="pixel" x="71" y="66" width="18" height="16" fill="#0f172a"/>
+                    <rect class="pixel" x="76" y="66" width="8" height="16" fill="#0284c7"/>
+                    <rect class="pixel" x="68" y="67" width="4" height="5" fill="#38bdf8"/>
+                    <rect class="pixel" x="88" y="67" width="4" height="5" fill="#38bdf8"/>
+                    <!-- Gold/Neon Belt & Dual Swords -->
+                    <rect class="pixel" x="70" y="77" width="20" height="3" fill="#f59e0b"/>
+                    <rect class="pixel" x="65" y="72" width="4" height="14" fill="#e2e8f0"/>
+                    <!-- Boots -->
+                    <rect class="pixel" x="73" y="82" width="5" height="8" fill="#030712"/>
+                    <rect class="pixel" x="82" y="82" width="5" height="8" fill="#030712"/>
+                </g>
+
+                <!-- Happy Cute Nakornban (Pass >= 14) -->
+                <g id="char-happy" class="hidden">
+                    <g id="happy-jump">
+                        <path class="pixel" d="M72,47 L88,47 L85,37 L75,37 Z" fill="#0284c7"/>
+                        <rect class="pixel" x="70" y="47" width="20" height="4" fill="#38bdf8"/>
+                        <rect class="pixel" x="73" y="51" width="14" height="10" fill="#ffdbac"/>
+                        <!-- Happy Joy Eyes ^ ^ -->
+                        <path class="pixel" d="M75,54 L78,54 M82,54 L85,54" stroke="#030712" stroke-width="2"/>
+                        <rect class="pixel" x="78" y="57" width="4" height="2" fill="#f43f5e"/>
+                        <!-- Body Raised Arms -->
+                        <rect class="pixel" x="71" y="61" width="18" height="16" fill="#0f172a"/>
+                        <rect class="pixel" x="66" y="55" width="4" height="12" fill="#0284c7"/>
+                        <rect class="pixel" x="90" y="55" width="4" height="12" fill="#0284c7"/>
+                        <rect class="pixel" x="73" y="77" width="5" height="6" fill="#030712"/>
+                        <rect class="pixel" x="82" y="77" width="5" height="6" fill="#030712"/>
+                    </g>
+                    <!-- Glowing Cyber Confetti & Sparkles -->
+                    <g id="confetti">
+                        <circle cx="45" cy="30" r="2" fill="#38bdf8"/>
+                        <circle cx="115" cy="25" r="3" fill="#f43f5e"/>
+                        <circle cx="55" cy="45" r="2" fill="#4ade80"/>
+                        <circle cx="105" cy="45" r="2" fill="#fbbf24"/>
+                    </g>
+                </g>
+
+                <!-- Cool Angry Nakornban Slashing (Fail < 14) -->
+                <g id="char-angry" class="hidden">
+                    <rect class="pixel" x="60" y="40" width="40" height="50" fill="rgba(248,113,113,0.15)"/>
+                    <path class="pixel" d="M72,52 L88,52 L85,42 L75,42 Z" fill="#b91c1c"/>
+                    <rect class="pixel" x="73" y="56" width="14" height="10" fill="#fca5a5"/>
+                    <!-- Cool Angry Intense Eyes -->
+                    <line x1="75" y1="58" x2="79" y2="62" stroke="#000" stroke-width="2"/>
+                    <line x1="85" y1="58" x2="81" y2="62" stroke="#000" stroke-width="2"/>
+                    <rect class="pixel" x="71" y="66" width="18" height="16" fill="#0f172a"/>
+                    <!-- Cyber Slash FX -->
+                    <path class="pixel" d="M35,35 L115,90" stroke="#38bdf8" stroke-width="4" stroke-linecap="round"/>
+                    <path class="pixel" d="M40,33 L120,88" stroke="#ffffff" stroke-width="2"/>
+                    <line x1="88" y1="68" x2="125" y2="45" stroke="#e2e8f0" stroke-width="3"/>
+                </g>
+            </g>
+        </svg>
+
+        <div id="feedback-banner" class="feedback-banner hidden"></div>
+    </div>
+
+    <div class="content-area">
+        <div id="question-box" class="question-box">กำลังโหลดคำถาม...</div>
+        <div id="options-grid" class="options-grid"></div>
+    </div>
+
+    <div id="start-screen" class="screen">
+        <div style="background: rgba(15, 23, 42, 0.8); border: 2px solid #0284c7; padding: 15px; border-radius: 12px; margin-bottom: 10px;">
+            <h2 style="color: #7dd3fc; margin: 0 0 8px 0; font-size: 20px; font-weight: 800;">📜 กฎหมายพระนครบาล 📜</h2>
+            <p style="color: #cbd5e1; font-size: 13.5px; line-height: 1.6; margin: 0;">
+                แบบทดสอบความรู้ 20 ข้อ (เรียงตามลำดับ)<br>
+                เกณฑ์สอบผ่าน: <strong style="color: #38bdf8;">14 ข้อขึ้นไป (70%)</strong><br>
+                สะสมคะแนนเพื่อรับประกาศการรักษาความสงบ!
+            </p>
+        </div>
+        <button id="start-btn" class="btn-start">⚔️ คลิกเพื่อเริ่ม (START GAME) ⚔️</button>
+    </div>
+
+    <div id="result-screen" class="screen hidden">
+        <h2 id="result-title" style="color: #7dd3fc; margin-bottom: 10px; font-size: 22px;">สรุปผลการทดสอบ</h2>
+        <div id="result-score" style="font-size: 32px; font-weight: 800; color: #38bdf8; margin: 10px 0; font-family: 'Silkscreen', cursive;">0 / 20</div>
+        <p id="result-desc" style="color: #cbd5e1; font-size: 14px; margin-bottom: 20px; line-height: 1.5;"></p>
+        <button id="restart-btn" class="btn-start">🔄 เล่นใหม่อีกครั้ง</button>
+    </div>
+</div>
+
+<script>
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    let audioCtx = null;
+
+    function initAudio() {
+        if (!audioCtx) audioCtx = new AudioContext();
+    }
+
+    function playSound(type) {
+        if (!audioCtx) return;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        const now = audioCtx.currentTime;
+
+        if (type === 'click') {
+            osc.type = 'square'; osc.frequency.setValueAtTime(400, now);
+            gain.gain.setValueAtTime(0.1, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
+            osc.start(now); osc.stop(now + 0.05);
+        } else if (type === 'correct') {
+            osc.type = 'triangle'; osc.frequency.setValueAtTime(523.25, now);
+            osc.frequency.setValueAtTime(659.25, now + 0.08); osc.frequency.setValueAtTime(783.99, now + 0.16);
+            gain.gain.setValueAtTime(0.15, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+            osc.start(now); osc.stop(now + 0.3);
+        } else if (type === 'wrong') {
+            osc.type = 'sawtooth'; osc.frequency.setValueAtTime(180, now);
+            osc.frequency.setValueAtTime(110, now + 0.1); gain.gain.setValueAtTime(0.2, now);
+            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3); osc.start(now); osc.stop(now + 0.3);
+        } else if (type === 'slash') {
+            osc.type = 'sawtooth'; osc.frequency.setValueAtTime(800, now);
+            osc.frequency.exponentialRampToValueAtTime(40, now + 0.25); gain.gain.setValueAtTime(0.3, now);
+            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25); osc.start(now); osc.stop(now + 0.25);
+        } else if (type === 'cheer') {
+            osc.type = 'sine'; osc.frequency.setValueAtTime(523.25, now);
+            osc.frequency.setValueAtTime(659.25, now + 0.1); osc.frequency.setValueAtTime(783.99, now + 0.2);
+            osc.frequency.setValueAtTime(1046.50, now + 0.3); gain.gain.setValueAtTime(0.2, now);
+            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.6); osc.start(now); osc.stop(now + 0.6);
         }
+    }
 
-        const sound = new PixelAudio();
-
-        // 10 Questions based strictly on the Ayutthaya Law Images
-        const questionsData = [
-            {
-                q: "1. หากพบการแต่งกายไม่ถูกต้องตามยุคและระเบียบ แล้วไม่ยอมเปลี่ยน เจ้าพนักงานจับกุมได้กี่วินาที?",
-                options: ["60 วินาที", "120 วินาที", "300 วินาที", "600 วินาที"],
-                correct: 1,
-                hint: "ตามกฎเหล็กข้อที่ 1: ตักเตือนก่อนทุกครั้ง หากไม่ยอมเปลี่ยนจับกุมได้ 120 วินาที"
-            },
-            {
-                q: "2. ยิงปืนในพระนครโดยไม่มีผู้เสียชีวิต ให้จับกุมกี่วินาที?",
-                options: ["120 วินาที", "300 วินาที", "600 วินาที", "900 วินาที"],
-                correct: 2,
-                hint: "ตามกฎเหล็กข้อที่ 2: ยิงปืนในพระนครไม่ว่าด้วยเหตุผลใด ถ้าไม่มีคนเสียชีวิต จับ 600 วินาที"
-            },
-            {
-                q: "3. หากยิงปืนในพระนครและทำผิดซ้ำซาก สามารถเพิ่มเวลาจับกุมได้สูงสุดกี่วินาที?",
-                options: ["700 วินาที", "800 วินาที", "900 วินาที", "1200 วินาที"],
-                correct: 2,
-                hint: "ตามกฎเหล็กข้อที่ 2: หากทำผิดซ้ำซาก เพิ่มเวลาได้ถึง 900 วินาที"
-            },
-            {
-                q: "4. การยิงปืนกรณีใดในพระนครที่ได้รับการยกเว้นไม่ถือเป็นความผิด?",
-                options: ["ยิงขึ้นฟ้าขู่", "ยิงไล่สัตว์", "ยิงงานเทศกาล", "ยิงโจร / ยิงโจรสลัด"],
-                correct: 3,
-                hint: "ตามกฎเหล็กข้อที่ 2: ยกเว้นการยิงโจร"
-            },
-            {
-                q: "5. การฆ่ากันจนถึงแก่ความตาย ให้จับกุมกี่วินาที โดยไม่ต้องตักเตือนสอบถาม?",
-                options: ["600 - 900 วินาที", "900 - 1200 วินาที", "1200 - 1800 วินาที", "2400 วินาที"],
-                correct: 2,
-                hint: "ตามกฎเหล็กข้อที่ 3: ฆ่ากันจนถึงแก่ความตาย จับกุม 1200-1800 วินาที"
-            },
-            {
-                q: "6. การจับกุมมากหรือน้อยกว่าที่กำหนดไว้ในกฎหมายและกฎเหล็ก ถือเป็นอย่างไร?",
-                options: ["ทำได้ตามดุลพินิจ", "ถือเป็นความผิด", "ได้รับการยกเว้น", "ตักเตือนเจ้าพนักงาน"],
-                correct: 1,
-                hint: "ตามกฎเหล็กข้อที่ 4: การจับกุมมากหรือน้อยกว่าที่กำหนด ให้ถือเป็นความผิด"
-            },
-            {
-                q: "7. ผู้ใดฝ่าฝืนกฎเหล็กการใช้กุญแจมือ จะได้รับโทษอย่างไร?",
-                options: ["ปรับ 50 พดด้วง", "ถูกลงโทษตามกฎหมายอย่างเฉียบขาด", "กักขัง 3 วัน", "ริบทรัพย์สิน"],
-                correct: 1,
-                hint: "ตามประกาศกฎเหล็ก: ผู้ฝ่าฝืนจะถูกลงโทษตามกฎหมายอย่างเฉียบขาด"
-            },
-            {
-                q: "8. ก่อนดำเนินการจับกุมเรื่องการแต่งกาย เจ้าพนักงานต้องทำสิ่งใดก่อนทุกครั้ง?",
-                options: ["ตักเตือนก่อนทุกครั้ง", "แจ้งขุนนาง", "ปรับเงินทันที", "ริบเครื่องแต่งกาย"],
-                correct: 0,
-                hint: "ตามกฎเหล็กข้อที่ 1: ให้กรมตำรวจและกรมพระนครบาลตักเตือนก่อนทุกครั้ง"
-            },
-            {
-                q: "9. ตามหมวด 4 มาตรา 21 การป้องกันตัวเกินกว่าเหตุ มีโทษอย่างไร?",
-                options: ["ริบทรัพย์สิน", "จำคุก 350 วินาที", "จำคุก 600 วินาที", "ปรับ 1000 พดด้วง"],
-                correct: 1,
-                hint: "ตามมาตรา 21: การป้องกันตัวเกินกว่าเหตุ มีโทษจำคุก 350 วินาที"
-            },
-            {
-                q: "10. ตามหมวด 7 มาตรา 67 ขุนนางกระทำความผิด มีโทษอย่างไรเทียบกับคนทั่วไป?",
-                options: ["ลดโทษกึ่งหนึ่ง", "โทษเท่ากัน", "รับโทษ 2 เท่า", "ไม่ต้องรับโทษ"],
-                correct: 2,
-                hint: "ตามมาตรา 67: ขุนนางกระทำความผิด ให้ลงโทษ 2 เท่า"
-            }
-        ];
-
-        let questionsDataActive = [];
-        let currentQuestion = 0;
-        let score = 0;
-        let isAnswering = false;
-        let animId = null;
-
-        // Fisher-Yates Shuffle Algorithm for randomizing questions
-        function shuffleQuestions(array) {
-            const arr = [...array];
-            for (let i = arr.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [arr[i], arr[j]] = [arr[j], arr[i]];
-            }
-            return arr;
+    // Fixed sequential 20-question bank from documents
+    const questions = [
+        {
+            q: "ข้อ 1: กฎเหล็กข้อ 1 การแต่งกายไม่ถูกต้องตามยุคและระเบียบ หากไม่ยอมเปลี่ยน สามารถจับกุมได้กี่วินาที?",
+            options: ["60 วินาที", "120 วินาที", "300 วินาที", "600 วินาที"],
+            answer: 1,
+            reason: "กฎเหล็กข้อ 1 ระบุให้ตักเตือนก่อนทุกครั้ง หากไม่ยอมเปลี่ยน จับกุมได้ 120 วินาที"
+        },
+        {
+            q: "ข้อ 2: กฎเหล็กข้อ 2 การยิงปืนในพระนครโดยไม่มีผู้เสียชีวิต ให้จับกุมกี่วินาที?",
+            options: ["120 วินาที", "300 วินาที", "600 วินาที", "900 วินาที"],
+            answer: 2,
+            reason: "กฎเหล็กข้อ 2 ยิงปืนในพระนครไม่ว่าด้วยเหตุผลใด ถ้าไม่มีคนเสียชีวิต จับ 600 วินาที"
+        },
+        {
+            q: "ข้อ 3: กฎเหล็กข้อ 2 หากยิงปืนในพระนครและทำผิดซ้ำซาก เพิ่มเวลาจับกุมได้สูงสุดกี่วินาที?",
+            options: ["700 วินาที", "800 วินาที", "900 วินาที", "1200 วินาที"],
+            answer: 2,
+            reason: "หากทำผิดซ้ำซากเพิ่มเวลาจับกุมได้ถึง 900 วินาที"
+        },
+        {
+            q: "ข้อ 4: กฎเหล็กข้อ 3 การฆ่ากันจนถึงแก่ความตาย ให้จับกุมกี่วินาที โดยไม่ต้องตักเตือน?",
+            options: ["600 - 900 วินาที", "900 - 1200 วินาที", "1200 - 1800 วินาที", "2400 วินาที"],
+            answer: 2,
+            reason: "กฎเหล็กข้อ 3 ฆ่ากันจนถึงแก่ความตาย ให้จับกุม 1200-1800 วินาที โดยไม่ต้องตักเตือนสอบถาม"
+        },
+        {
+            q: "ข้อ 5: กฎเหล็กข้อ 4 การจับกุมมากหรือน้อยกว่าที่กำหนดไว้ในกฎหมายถือเป็นอย่างไร?",
+            options: ["ทำได้ตามดุลพินิจ", "ถือเป็นความผิด", "ได้รับการยกเว้น", "ตักเตือนเจ้าพนักงาน"],
+            answer: 1,
+            reason: "กฎเหล็กข้อ 4 การจับกุมมากหรือน้อยกว่าที่กำหนดไว้ ถือเป็นความผิด"
+        },
+        {
+            q: "ข้อ 6: ตามหมวด 3 มาตรา 5 โทษสำหรับขุนนาง มีบทลงโทษตามข้อใด?",
+            options: ["จำคุก 1000 วิ", "ริบทรัพย์สินทั้งหมด", "ปลดจ่า / ลงบรรดาศักดิ์ / จำคุก / ปรับ", "ประหารชีวิต"],
+            answer: 2,
+            reason: "มาตรา 5 กำหนดโทษขุนนาง: ปลดจ่า / ลงบรรดาศักดิ์ / จำคุก / ปรับ"
+        },
+        {
+            q: "ข้อ 7: ตามหมวด 3 มาตรา 8 โทษกรณีผู้ต้องโทษปรับ ต้องชำระเงินตามจำนวนภายในกี่วัน?",
+            options: ["3 วัน", "7 วัน", "15 วัน", "30 วัน"],
+            answer: 0,
+            reason: "มาตรา 8 ผู้ต้องโทษปรับ ต้องชำระเงินตามจำนวนภายในกำหนด 3 วัน"
+        },
+        {
+            q: "ข้อ 8: ตามหมวด 3 มาตรา 10 ผู้ต้องโทษปรับไม่อาจชำระได้ภายใน 3 วัน มีโทษจำคุกอัตราเท่าใด?",
+            options: ["จำคุก 500 วิ", "จำคุก 1000 วิ (1500 พดด้วง ต่อ 400 วิ)", "จำคุก 2000 วิ", "จำคุก 3000 วิ"],
+            answer: 1,
+            reason: "มาตรา 10 จำคุก (1500 พดด้วง ต่อ 400 วิ)"
+        },
+        {
+            q: "ข้อ 9: ตามหมวด 3 มาตรา 11 ไม่เสพกัญชา/ฝิ่น/ชาหมากขาย สามารถเสนอความได้ หากไม่จ่ายตาม มาตรา 10 มีโทษอย่างไร?",
+            options: ["ปรับกึ่งหนึ่ง", "ปรับ / จำคุก", "ริบทรัพย์สิน", "เพิ่มโทษ 2 เท่า"],
+            answer: 1,
+            reason: "มาตรา 11 กำหนดโทษ ปรับ / จำคุก"
+        },
+        {
+            q: "ข้อ 10: ตามหมวด 3 มาตรา 12 การแจ้งความเท็จ มีโทษจำคุกกี่วินาที?",
+            options: ["จำคุก 500 วิ", "จำคุก 800 วิ", "จำคุก 1050 วิ และ ปรับไม่เกิน 6500 พดด้วง", "จำคุก 2000 วิ"],
+            answer: 2,
+            reason: "มาตรา 12 แจ้งความเท็จ จำคุก 1050 วิ และ ปรับไม่เกิน 6500 พดด้วง"
+        },
+        {
+            q: "ข้อ 11: ตามหมวด 3 มาตรา 13 ผู้กระทำผิดซ้ำมากกว่า 5 คดีขึ้นไป มีบทลงโทษอย่างไร?",
+            options: ["ริบทรัพย์สิน", "บัญญัติ", "จำคุกตลอดชีวิต", "เนรเทศ"],
+            answer: 1,
+            reason: "มาตรา 13 กระทำผิดซ้ำมากกว่า 5 คดีขึ้นไป ให้บัญญัติโทษ"
+        },
+        {
+            q: "ข้อ 12: ตามหมวด 3 มาตรา 14 ผู้กระทำผิดมากกว่า 1 ครั้งแต่ไม่เกิน 5 ครั้ง มีโทษอย่างไร?",
+            options: ["กึ่งหนึ่งของโทษที่กระทำผิด", "รับโทษ 2 เท่า", "ลดโทษกึ่งหนึ่ง", "จำคุกเท่าเดิม"],
+            answer: 0,
+            reason: "มาตรา 14 กำหนดโทษ กึ่งหนึ่งของโทษที่กระทำผิด"
+        },
+        {
+            q: "ข้อ 13: ตามหมวด 3 มาตรา 15 การแจ้งความเท็จโดยที่ผู้ถูกกล่าวหาไม่ได้กระทำผิด มีโทษอย่างไร?",
+            options: ["เพิ่มโทษ 1 เท่า", "ลดโทษ 1 ใน 3", "ปรับ 1000 พดด้วง", "จำคุก 300 วิ"],
+            answer: 0,
+            reason: "มาตรา 15 แจ้งความเท็จโดยผู้ถูกกล่าวหาไม่ได้กระทำผิด ให้เพิ่มโทษ 1 เท่า"
+        },
+        {
+            q: "ข้อ 14: ตามหมวด 4 มาตรา 16 การฆ่าผู้อื่น มีโทษจำคุกกี่วินาที?",
+            options: ["จำคุก 600 วิ", "จำคุก 1050 วิ / ปรับ 5000 พดด้วง", "จำคุก 1500 วิ", "จำคุก 1800 วิ"],
+            answer: 1,
+            reason: "มาตรา 16 ฆ่าผู้อื่น จำคุก 1050 วิ / ปรับ 5000 พดด้วง"
+        },
+        {
+            q: "ข้อ 15: ตามหมวด 4 มาตรา 21 การป้องกันตัวเกินกว่าเหตุ มีโทษจำคุกกี่วินาที?",
+            options: ["จำคุก 120 วิ", "จำคุก 350 วิ", "จำคุก 500 วิ", "จำคุก 750 วิ"],
+            answer: 1,
+            reason: "มาตรา 21 การป้องกันตัวเกินกว่าเหตุ จำคุก 350 วิ"
+        },
+        {
+            q: "ข้อ 16: ตามหมวด 4 มาตรา 24 การขโมยม้าลำปางรอง มีโทษจำคุกกี่วินาที?",
+            options: ["300 วิ", "500 วิ", "750 วิ", "1800 วิ"],
+            answer: 1,
+            reason: "มาตรา 24 ขโมยม้าลำปางรอง จำคุก 500 วิ"
+        },
+        {
+            q: "ข้อ 17: ตามหมวด 4 มาตรา 25 การใช้กุญแจมือในการจับกุมผู้ต้องหา มีโทษจำคุกกี่วินาที?",
+            options: ["500 วิ", "1000 วิ", "1800 วิ", "2000 วิ"],
+            answer: 3,
+            reason: "มาตรา 25 ใช้กุญแจมือในการจับกุม จำคุก 2000 วิ"
+        },
+        {
+            q: "ข้อ 18: ตามหมวด 4 มาตรา 27 การทำงางานให้ผู้อื่น มีโทษจำคุกกี่วินาที?",
+            options: ["1050 วิ", "1250 วิ", "1500 วิ", "1800 วิ"],
+            answer: 1,
+            reason: "มาตรา 27 ทำงางานให้ผู้อื่น จำคุก 1250 วิ"
+        },
+        {
+            q: "ข้อ 19: ตามหมวด 4 มาตรา 37 การกระทำตั้งแต่ 5 คนขึ้นไปร่วมกระทำความผิด เรียกว่าอะไร?",
+            options: ["ซ่องโจร (จำคุก 1200 วิ)", "ขบถพระนคร", "ซุ่มซ่อน", "ก่อการร้าย"],
+            answer: 0,
+            reason: "มาตรา 37 การกระทำตั้งแต่ 5 คนขึ้นไป เรียกว่า 'ซ่องโจร' จำคุก 1200 วิ"
+        },
+        {
+            q: "ข้อ 20: ตามหมวด 7 มาตรา 67 ขุนนางกระทำความผิด มีโทษอย่างไรเทียบกับราษฎร?",
+            options: ["ลดโทษกึ่งหนึ่ง", "โทษเท่ากัน", "รับโทษ 2 เท่า", "ไม่ต้องรับโทษ"],
+            answer: 2,
+            reason: "มาตรา 67 ขุนนางกระทำความผิด รับโทษเป็น 2 เท่า"
         }
+    ];
 
-        function startGame() {
-            sound.playClick();
-            if (animId) cancelAnimationFrame(animId);
-            
-            // Randomize questions list each start
-            questionsDataActive = shuffleQuestions(questionsData);
-            
-            currentQuestion = 0;
-            score = 0;
-            isAnswering = false;
+    let currentQuestionIndex = 0;
+    let score = 0;
 
-            document.getElementById('start-screen').classList.add('hidden');
-            document.getElementById('result-screen').classList.add('hidden');
-            document.getElementById('quiz-screen').classList.remove('hidden');
+    const startScreen = document.getElementById('start-screen');
+    const resultScreen = document.getElementById('result-screen');
+    const startBtn = document.getElementById('start-btn');
+    const restartBtn = document.getElementById('restart-btn');
+    const questionBox = document.getElementById('question-box');
+    const optionsGrid = document.getElementById('options-grid');
+    const progressText = document.getElementById('progress-text');
+    const scoreText = document.getElementById('score-text');
+    const feedbackBanner = document.getElementById('feedback-banner');
 
-            updateHUD();
-            loadQuestion();
-        }
+    const charNormal = document.getElementById('char-normal');
+    const charHappy = document.getElementById('char-happy');
+    const charAngry = document.getElementById('char-angry');
 
-        function updateHUD() {
-            document.getElementById('score-val').innerText = score;
-            document.getElementById('current-q-num').innerText = currentQuestion + 1;
-            const progressPercent = ((currentQuestion + 1) / questionsDataActive.length) * 100;
-            document.getElementById('progress-fill').style.width = `${progressPercent}%`;
-        }
+    function handleStart() {
+        initAudio();
+        playSound('click');
+        startGame();
+    }
 
-        function loadQuestion() {
-            isAnswering = false;
-            const qData = questionsDataActive[currentQuestion];
-            document.getElementById('question-text').innerText = qData.q;
-            
-            const optionsContainer = document.getElementById('options-container');
-            optionsContainer.innerHTML = '';
+    startBtn.addEventListener('click', handleStart);
+    startBtn.addEventListener('touchstart', (e) => { e.preventDefault(); handleStart(); });
+    restartBtn.addEventListener('click', handleStart);
+    restartBtn.addEventListener('touchstart', (e) => { e.preventDefault(); handleStart(); });
 
-            const feedbackBanner = document.getElementById('feedback-banner');
-            feedbackBanner.classList.add('hidden');
+    function startGame() {
+        currentQuestionIndex = 0;
+        score = 0;
 
-            qData.options.forEach((opt, idx) => {
-                const btn = document.createElement('button');
-                btn.type = 'button';
-                btn.className = 'pixel-btn w-full py-2.5 px-3 text-sm sm:text-base rounded text-left flex items-center gap-2 cursor-pointer';
-                btn.innerHTML = `
-                    <span class="w-6 h-6 rounded-full bg-amber-900 text-amber-100 flex items-center justify-center font-pixel text-xs border border-amber-700">${String.fromCharCode(65 + idx)}</span>
-                    <span>${opt}</span>
-                `;
-                btn.addEventListener('click', () => selectAnswer(idx, btn));
-                optionsContainer.appendChild(btn);
-            });
-        }
+        startScreen.classList.add('hidden');
+        resultScreen.classList.add('hidden');
+        
+        resetCharState();
+        updateHeader();
+        loadQuestion();
+    }
 
-        function selectAnswer(selectedIndex, btnElement) {
-            if (isAnswering) return;
-            isAnswering = true;
+    function resetCharState() {
+        charNormal.classList.remove('hidden');
+        charHappy.classList.add('hidden');
+        charAngry.classList.add('hidden');
+    }
 
-            const qData = questionsDataActive[currentQuestion];
-            const allBtns = document.getElementById('options-container').children;
-            const feedbackBanner = document.getElementById('feedback-banner');
+    function updateHeader() {
+        progressText.innerText = `ข้อที่: ${currentQuestionIndex + 1}/${questions.length}`;
+        scoreText.innerText = `คะแนน: ${score}`;
+    }
 
-            if (selectedIndex === qData.correct) {
-                sound.playCorrect();
-                btnElement.classList.add('pixel-btn-correct');
-                score++;
-                
-                feedbackBanner.className = "p-2.5 rounded text-xs sm:text-sm font-bold bg-green-200 border-green-800 text-green-950 mb-3 text-left";
-                feedbackBanner.innerHTML = `✅ <strong>ถูกต้อง!</strong> ${qData.hint}`;
-            } else {
-                sound.playWrong();
-                btnElement.classList.add('pixel-btn-wrong');
-                if (allBtns[qData.correct]) {
-                    allBtns[qData.correct].classList.add('pixel-btn-correct');
-                }
+    function loadQuestion() {
+        const q = questions[currentQuestionIndex];
+        questionBox.innerText = q.q;
+        optionsGrid.innerHTML = '';
 
-                feedbackBanner.className = "p-2.5 rounded text-xs sm:text-sm font-bold bg-red-200 border-red-800 text-red-950 mb-3 text-left";
-                feedbackBanner.innerHTML = `❌ <strong>ผิดเสียแล้ว!</strong> ${qData.hint}`;
-            }
-
-            feedbackBanner.classList.remove('hidden');
-            updateHUD();
-
-            Array.from(allBtns).forEach(b => b.disabled = true);
-
-            setTimeout(() => {
-                if (currentQuestion >= questionsDataActive.length - 1) {
-                    showResults();
-                } else {
-                    currentQuestion++;
-                    updateHUD();
-                    loadQuestion();
-                }
-            }, 1600);
-        }
-
-        function showResults() {
-            document.getElementById('quiz-screen').classList.add('hidden');
-            document.getElementById('result-screen').classList.remove('hidden');
-
-            const isPassed = score >= 7;
-            const percentage = (score / 10) * 100;
-
-            document.getElementById('final-score').innerText = `${score} / 10 ข้อ`;
-            document.getElementById('final-percent').innerText = `${percentage}%`;
-
-            const rankBadge = document.getElementById('rank-badge');
-            const resultEval = document.getElementById('result-evaluation');
-            const finalStatus = document.getElementById('final-status');
-
-            if (isPassed) {
-                sound.playVictory();
-                finalStatus.innerText = "🎉 ผ่านเกณฑ์การสอบ";
-                finalStatus.className = "font-bold text-green-700";
-                
-                if (score === 10) {
-                    rankBadge.innerText = "👑 ตำแหน่ง: แม่ทัพนครบาลยอดเยี่ยม";
-                    resultEval.innerText = '"สุดยอดมาก! ท่านทำคะแนนเต็ม 10 ข้อ รอบรู้ในกฎหมายและกฎเหล็กนครบาลอย่างหาตัวจับยาก!"';
-                } else {
-                    rankBadge.innerText = "🗡️ ตำแหน่ง: ขุนปราบพระนครบาล";
-                    resultEval.innerText = '"ยินดีด้วย! ท่านผ่านการสอบนครบาล (7 ข้อขึ้นไป) มีความรอบรู้เพียงพอในการดูแลความสงบอโยธยา"';
-                }
-
-                startHappyAnimation();
-            } else {
-                sound.playSlash();
-                finalStatus.innerText = "⚠️ ไม่ผ่านเกณฑ์ (ต้องได้ 7 ขึ้นไป)";
-                finalStatus.className = "font-bold text-red-600";
-                
-                rankBadge.innerText = "💀 ตำแหน่ง: ผู้ต้องโทษฝ่าฝืนกฎเหล็ก";
-                resultEval.innerText = '"ท่านได้คะแนนไม่ถึง 7 ข้อ! กรมพระนครบาลดุร้ายกริ้วยิ่งนัก ถูกลงโทษฟันดาบตามกฎเหล็ก!"';
-
-                startAngrySlashAnimation();
-            }
-        }
-
-        // Attach Event Listeners Safely
-        window.addEventListener('DOMContentLoaded', () => {
-            const startBtn = document.getElementById('start-btn');
-            const restartBtn = document.getElementById('restart-btn');
-
-            if (startBtn) {
-                startBtn.addEventListener('click', startGame);
-                startBtn.addEventListener('touchstart', (e) => {
-                    e.preventDefault();
-                    startGame();
-                });
-            }
-
-            if (restartBtn) {
-                restartBtn.addEventListener('click', startGame);
-                restartBtn.addEventListener('touchstart', (e) => {
-                    e.preventDefault();
-                    startGame();
-                });
-            }
+        q.options.forEach((opt, idx) => {
+            const btn = document.createElement('button');
+            btn.className = 'btn-option';
+            btn.innerText = `${String.fromCharCode(65 + idx)}. ${opt}`;
+            btn.onclick = () => selectOption(idx);
+            optionsGrid.appendChild(btn);
         });
 
-        /* -------------------------------------------------------------
-           PIXEL CANVAS ANIMATION SYSTEM
-           ------------------------------------------------------------- */
-        const canvas = document.getElementById('pixel-anim-canvas');
-        const ctx = canvas.getContext('2d');
-        ctx.imageSmoothingEnabled = false;
+        updateHeader();
+    }
 
-        let particles = [];
-        function initHappyParticles() {
-            particles = [];
-            for(let i=0; i<35; i++){
-                particles.push({
-                    x: Math.random() * canvas.width,
-                    y: Math.random() * canvas.height - canvas.height,
-                    size: Math.floor(Math.random() * 4) + 2,
-                    color: ['#facc15', '#4ade80', '#60a5fa', '#f43f5e', '#a855f7'][Math.floor(Math.random() * 5)],
-                    speedY: Math.random() * 2 + 1,
-                    speedX: (Math.random() - 0.5) * 1
-                });
-            }
+    function selectOption(selectedIndex) {
+        const q = questions[currentQuestionIndex];
+        const buttons = optionsGrid.children;
+
+        for (let btn of buttons) {
+            btn.style.pointerEvents = 'none';
         }
 
-        function startHappyAnimation() {
-            initHappyParticles();
-            let frame = 0;
-
-            function animate() {
-                frame++;
-                ctx.fillStyle = '#0f172a';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-                ctx.fillStyle = '#1e293b';
-                ctx.fillRect(0, 110, canvas.width, 40);
-
-                particles.forEach(p => {
-                    p.y += p.speedY;
-                    p.x += p.speedX;
-                    if(p.y > canvas.height) p.y = -10;
-                    ctx.fillStyle = p.color;
-                    ctx.fillRect(p.x, p.y, p.size, p.size);
-                });
-
-                const jumpY = Math.abs(Math.sin(frame * 0.15)) * 16;
-                const charX = canvas.width / 2 - 20;
-                const charY = 65 - jumpY;
-
-                drawPixelOfficer(charX, charY, 'happy', frame);
-
-                if(frame % 20 < 10) {
-                    drawPixelStar(charX - 25, charY + 10, '#facc15');
-                    drawPixelStar(charX + 45, charY + 5, '#facc15');
-                }
-
-                ctx.font = '12px Silkscreen, Prompt, sans-serif';
-                ctx.fillStyle = '#4ade80';
-                ctx.textAlign = 'center';
-                ctx.fillText('PASSED! NAKORNBAN HAPPY', canvas.width/2, 140);
-
-                animId = requestAnimationFrame(animate);
-            }
-            animate();
+        if (selectedIndex === q.answer) {
+            score++;
+            buttons[selectedIndex].classList.add('correct');
+            playSound('correct');
+            showFeedback(true, "ถูกต้อง! " + q.reason);
+        } else {
+            buttons[selectedIndex].classList.add('wrong');
+            buttons[q.answer].classList.add('correct');
+            playSound('wrong');
+            showFeedback(false, "ผิด! " + q.reason);
         }
 
-        let slashEffectFrame = 0;
-        function startAngrySlashAnimation() {
-            slashEffectFrame = 0;
-            let frame = 0;
+        scoreText.innerText = `คะแนน: ${score}`;
 
-            function animate() {
-                frame++;
-                slashEffectFrame++;
-
-                if(slashEffectFrame % 30 < 5) {
-                    ctx.fillStyle = '#450a0a';
-                } else {
-                    ctx.fillStyle = '#180808';
-                }
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-                ctx.fillStyle = '#290606';
-                ctx.fillRect(0, 110, canvas.width, 40);
-
-                const charX = canvas.width / 2 - 20;
-                const charY = 65;
-
-                const shakeX = (slashEffectFrame % 20 < 10) ? (Math.random()*4 - 2) : 0;
-
-                drawPixelOfficer(charX + shakeX, charY, 'angry', frame);
-
-                if (slashEffectFrame % 30 >= 10 && slashEffectFrame % 30 <= 20) {
-                    if (slashEffectFrame % 30 === 10) sound.playSlash();
-                    
-                    ctx.strokeStyle = '#ffffff';
-                    ctx.lineWidth = 4;
-                    ctx.beginPath();
-                    ctx.moveTo(charX + 35, charY - 10);
-                    ctx.lineTo(charX - 25, charY + 45);
-                    ctx.stroke();
-
-                    ctx.strokeStyle = '#ef4444';
-                    ctx.lineWidth = 2;
-                    ctx.beginPath();
-                    ctx.moveTo(charX + 40, charY - 5);
-                    ctx.lineTo(charX - 20, charY + 50);
-                    ctx.stroke();
-
-                    for(let i=0; i<6; i++) {
-                        ctx.fillStyle = '#facc15';
-                        ctx.fillRect(charX - 10 + (Math.random()*30), charY + (Math.random()*40), 3, 3);
-                    }
-                }
-
-                ctx.font = '12px Silkscreen, Prompt, sans-serif';
-                ctx.fillStyle = '#ef4444';
-                ctx.textAlign = 'center';
-                ctx.fillText('FAILED! ANGRY SLASH!', canvas.width/2, 140);
-
-                animId = requestAnimationFrame(animate);
-            }
-            animate();
-        }
-
-        function drawPixelOfficer(x, y, state, frame) {
-            ctx.fillStyle = '#78350F'; ctx.fillRect(x + 10, y, 20, 4);
-            ctx.fillStyle = '#B45309'; ctx.fillRect(x + 12, y - 6, 16, 6);
-            ctx.fillStyle = '#FBBF24'; ctx.fillRect(x + 18, y - 10, 4, 4);
-
-            ctx.fillStyle = (state === 'angry') ? '#fca5a5' : '#FDBA74';
-            ctx.fillRect(x + 10, y + 4, 20, 14);
-
-            if (state === 'happy') {
-                ctx.fillStyle = '#1E293B';
-                ctx.fillRect(x + 13, y + 8, 4, 2);
-                ctx.fillRect(x + 23, y + 8, 4, 2);
-                ctx.fillStyle = '#991B1B';
-                ctx.fillRect(x + 16, y + 13, 8, 3);
+        setTimeout(() => {
+            hideFeedback();
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questions.length) {
+                loadQuestion();
             } else {
-                ctx.fillStyle = '#1E293B';
-                ctx.fillRect(x + 13, y + 8, 4, 3);
-                ctx.fillRect(x + 23, y + 8, 4, 3);
-                ctx.fillStyle = '#451A03';
-                ctx.beginPath();
-                ctx.moveTo(x + 12, y + 6); ctx.lineTo(x + 18, y + 9);
-                ctx.moveTo(x + 28, y + 6); ctx.lineTo(x + 22, y + 9);
-                ctx.stroke();
-                ctx.fillStyle = '#451A03';
-                ctx.fillRect(x + 15, y + 14, 10, 2);
+                endGame();
             }
+        }, 2000);
+    }
 
-            ctx.fillStyle = '#451A03';
-            ctx.fillRect(x + 13, y + 12, 14, 2);
+    function showFeedback(isCorrect, text) {
+        feedbackBanner.innerText = isCorrect ? "✨ ถูกต้อง!" : "❌ ผิด!";
+        feedbackBanner.className = `feedback-banner ${isCorrect ? 'feedback-correct' : 'feedback-wrong'}`;
+        feedbackBanner.classList.remove('hidden');
+        questionBox.innerText = text;
+    }
 
-            ctx.fillStyle = '#991B1B';
-            ctx.fillRect(x + 8, y + 18, 24, 16);
-            ctx.fillStyle = '#FBBF24';
-            ctx.fillRect(x + 18, y + 18, 4, 16);
+    function hideFeedback() {
+        feedbackBanner.classList.add('hidden');
+    }
 
-            if (state === 'happy') {
-                ctx.fillStyle = '#991B1B';
-                ctx.fillRect(x + 2, y + 14, 6, 12);
-                ctx.fillRect(x + 32, y + 14, 6, 12);
-                ctx.fillStyle = '#FDBA74';
-                ctx.fillRect(x + 2, y + 10, 6, 4);
-                ctx.fillRect(x + 32, y + 10, 6, 4);
-            } else {
-                ctx.fillStyle = '#991B1B';
-                ctx.fillRect(x + 2, y + 18, 6, 12);
-                ctx.fillRect(x + 32, y + 14, 8, 8);
+    function endGame() {
+        // Pass condition: 14 out of 20 (70%)
+        const passed = score >= 14;
 
-                const isSlash = (slashEffectFrame % 30 >= 10 && slashEffectFrame % 30 <= 20);
-                ctx.fillStyle = '#e2e8f0';
-                if (isSlash) {
-                    ctx.fillRect(x + 32, y + 20, 18, 4);
-                    ctx.fillStyle = '#78350F'; ctx.fillRect(x + 28, y + 20, 4, 4);
-                } else {
-                    ctx.fillRect(x + 36, y - 12, 4, 26);
-                    ctx.fillStyle = '#78350F'; ctx.fillRect(x + 36, y + 14, 4, 6);
-                }
-            }
-
-            ctx.fillStyle = '#1e293b';
-            ctx.fillRect(x + 11, y + 34, 6, 10);
-            ctx.fillRect(x + 23, y + 34, 6, 10);
+        charNormal.classList.add('hidden');
+        
+        if (passed) {
+            charHappy.classList.remove('hidden');
+            playSound('cheer');
+            document.getElementById('result-title').innerText = "🎉 ผ่านการทดสอบ! 🎉";
+            document.getElementById('result-title').style.color = "#60a5fa";
+            document.getElementById('result-desc').innerText = "ยอดเยี่ยม! ท่านทำได้ผ่านเกณฑ์ (14 ข้อขึ้นไป) มีความเชี่ยวชาญกฎหมายพระนครบาล เหมาะสมแก่การรักษาความสงบ!";
+        } else {
+            charAngry.classList.remove('hidden');
+            playSound('slash');
+            document.getElementById('result-title').innerText = "⚔️ ไม่ผ่านการทดสอบ! ⚔️";
+            document.getElementById('result-title').style.color = "#f87171";
+            document.getElementById('result-desc').innerText = "คะแนนไม่ถึงเกณฑ์ 14 ข้อ! กรมพระนครบาลลงโทษประหาร/ฟันดาบ ไปศึกษากฎหมายมาใหม่!";
         }
 
-        function drawPixelStar(x, y, color) {
-            ctx.fillStyle = color;
-            ctx.fillRect(x + 2, y, 2, 6);
-            ctx.fillRect(x, y + 2, 6, 2);
-        }
-    </script>
+        document.getElementById('result-score').innerText = `${score} / ${questions.length} คะแนน`;
+        resultScreen.classList.remove('hidden');
+    }
+</script>
+
 </body>
 </html>
