@@ -3,543 +3,728 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>แบบทดสอบกฎหมาย กรมพระนครบาล (Pixel Art)</title>
+    <title>กรมพระนครบาล : แบบทดสอบความรู้กฎหมาย</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Silkscreen (Pixel font) & Prompt -->
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600;700;800&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@400;700&display=swap');
-
-        * {
-            box-sizing: border-box;
+        body {
+            font-family: 'Prompt', sans-serif;
+            background-color: #1a1005;
+            color: #4a2c00;
             user-select: none;
             -webkit-user-select: none;
         }
 
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: #1a1614;
-            font-family: 'Sarabun', sans-serif;
-            color: #d4af37;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
+        .font-pixel {
+            font-family: 'Silkscreen', cursive, sans-serif;
         }
 
-        #game-container {
-            width: 100%;
-            max-width: 480px;
-            height: 90vh;
-            max-height: 850px;
-            background: linear-gradient(180deg, #2b1f1d 0%, #171110 100%);
-            border: 4px solid #8b5a2b;
-            box-shadow: 0 0 20px rgba(0,0,0,0.8), inset 0 0 10px rgba(212,175,55,0.2);
-            display: flex;
-            flex-direction: column;
+        .pixel-box {
+            background-color: #fceabb;
+            border: 4px solid #4a2c00;
+            box-shadow: 0 6px 0 0 #2a1800, inset 0 -4px 0 0 #d8a25e;
             position: relative;
-            overflow: hidden;
-            border-radius: 8px;
         }
 
-        .header {
-            background: #4a1512;
-            border-bottom: 3px solid #8b5a2b;
-            padding: 10px;
+        .pixel-box-dark {
+            background-color: #2b1704;
+            border: 4px solid #d8a25e;
+            box-shadow: 0 6px 0 0 #120900;
+            color: #fef3c7;
+        }
+
+        .pixel-btn {
+            background-color: #f59e0b;
+            color: #381a00;
+            border: 4px solid #381a00;
+            box-shadow: 0 5px 0 0 #78350f;
+            transition: all 0.1s ease;
+            cursor: pointer;
             text-align: center;
+            font-weight: 700;
+            display: inline-block;
         }
 
-        .header h1 {
-            margin: 0;
-            font-size: 18px;
-            color: #f3e5ab;
-            text-shadow: 2px 2px 0px #000;
+        .pixel-btn:hover:not(:disabled) {
+            background-color: #fbbf24;
+            transform: translateY(-2px);
+            box-shadow: 0 7px 0 0 #78350f;
         }
 
-        .status-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 5px 15px;
-            background: rgba(0,0,0,0.4);
-            font-size: 14px;
-            color: #e6c687;
+        .pixel-btn:active:not(:disabled) {
+            transform: translateY(4px);
+            box-shadow: 0 1px 0 0 #78350f;
         }
 
-        .stage-view {
-            flex: 1;
-            position: relative;
-            background: #231917;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
+        .pixel-btn-correct {
+            background-color: #22c55e !important;
+            color: #ffffff !important;
+            border-color: #14532d !important;
+            box-shadow: 0 5px 0 0 #14532d !important;
         }
 
-        #pixel-canvas {
-            width: 100%;
+        .pixel-btn-wrong {
+            background-color: #ef4444 !important;
+            color: #ffffff !important;
+            border-color: #7f1d1d !important;
+            box-shadow: 0 5px 0 0 #7f1d1d !important;
+        }
+
+        .pixel-progress-bg {
+            background: #4a2c00;
+            border: 3px solid #2a1800;
+        }
+        
+        .pixel-progress-fill {
+            background: linear-gradient(90deg, #f59e0b, #fbbf24);
             height: 100%;
-            image-rendering: pixelated;
+            transition: width 0.3s ease-out;
         }
-
-        .content-area {
-            background: #36251e;
-            border-top: 3px solid #8b5a2b;
-            padding: 15px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            min-height: 320px;
-        }
-
-        .question-box {
-            background: #241713;
-            border: 2px solid #5c3a21;
-            padding: 12px;
-            border-radius: 4px;
-            color: #fff;
-            font-size: 15px;
-            line-height: 1.4;
-            min-height: 70px;
-            box-shadow: inset 0 0 5px rgba(0,0,0,0.5);
-        }
-
-        .options-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 8px;
-        }
-
-        .btn-option {
-            background: linear-gradient(180deg, #5a3d28 0%, #3a2517 100%);
-            border: 2px solid #8b6b47;
-            color: #f3e5ab;
-            padding: 10px 12px;
-            font-size: 14px;
-            text-align: left;
-            cursor: pointer;
-            border-radius: 4px;
-            transition: all 0.1s;
-            display: flex;
-            align-items: center;
-            font-family: 'Sarabun', sans-serif;
-        }
-
-        .btn-option:hover {
-            background: linear-gradient(180deg, #7a5438 0%, #4a301d 100%);
-            border-color: #d4af37;
-        }
-
-        .btn-option.correct {
-            background: #2e5a1c !important;
-            border-color: #55ff55 !important;
-            color: #fff !important;
-        }
-
-        .btn-option.wrong {
-            background: #6a1b1b !important;
-            border-color: #ff4444 !important;
-            color: #fff !important;
-        }
-
-        .screen {
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(23, 17, 16, 0.95);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            text-align: center;
-            z-index: 10;
-        }
-
-        .hidden {
-            display: none !important;
-        }
-
-        .btn-start {
-            background: linear-gradient(180deg, #a83232 0%, #6b1d1d 100%);
-            border: 3px solid #f3e5ab;
-            color: #fff;
-            padding: 15px 30px;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            border-radius: 6px;
-            box-shadow: 0 4px 0 #3a0d0d;
-            margin-top: 15px;
-            font-family: 'Sarabun', sans-serif;
-        }
-
-        .feedback-banner {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            padding: 10px 20px;
-            font-size: 20px;
-            font-weight: bold;
-            border-radius: 5px;
-            border: 2px solid #fff;
-            z-index: 5;
-            pointer-events: none;
-        }
-
-        .feedback-correct { background: #2e5a1c; color: #aaffaa; border-color: #aaffaa; }
-        .feedback-wrong { background: #6a1b1b; color: #ffaaaa; border-color: #ffaaaa; }
     </style>
 </head>
-<body>
+<body class="min-h-screen flex items-center justify-center p-2 sm:p-4">
 
-<div id="game-container">
-    <div class="header">
-        <h1>⚖️ กรมพระนครบาล : แบบทดสอบกฎหมาย ⚖️</h1>
-    </div>
-
-    <div class="status-bar">
-        <span id="progress-text">ข้อที่: 1/10</span>
-        <span id="score-text">คะแนน: 0</span>
-    </div>
-
-    <div class="stage-view">
-        <svg id="pixel-canvas" viewBox="0 0 160 140" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-                <style>.pixel { shape-rendering: crispEdges; }</style>
-            </defs>
-            <rect class="pixel" x="0" y="0" width="160" height="90" fill="#2d1e29"/>
-            <polygon class="pixel" points="10,90 20,40 30,90" fill="#4a3545"/>
-            <polygon class="pixel" points="25,90 40,25 55,90" fill="#5c4256"/>
-            <polygon class="pixel" points="70,90 90,15 110,90" fill="#6e4f69"/>
-            <polygon class="pixel" points="125,90 140,35 155,90" fill="#4a3545"/>
-
-            <rect class="pixel" x="0" y="90" width="160" height="8" fill="#8b5a2b"/>
-            <rect class="pixel" x="0" y="98" width="160" height="42" fill="#1c120c"/>
-
-            <g id="character-group">
-                <g id="char-normal">
-                    <path class="pixel" d="M74,55 L86,55 L83,45 L77,45 Z" fill="#b8860b"/>
-                    <rect class="pixel" x="72" y="55" width="16" height="3" fill="#8b0000"/>
-                    <rect class="pixel" x="75" y="58" width="10" height="8" fill="#ffdbac"/>
-                    <rect class="pixel" x="77" y="61" width="2" height="2" fill="#000"/>
-                    <rect class="pixel" x="81" y="61" width="2" height="2" fill="#000"/>
-                    <rect class="pixel" x="73" y="66" width="14" height="16" fill="#4a2c11"/>
-                    <rect class="pixel" x="78" y="66" width="4" height="16" fill="#8b0000"/>
-                    <rect class="pixel" x="72" y="76" width="16" height="3" fill="#d4af37"/>
-                    <rect class="pixel" x="68" y="74" width="4" height="12" fill="#c0c0c0"/>
-                    <rect class="pixel" x="74" y="82" width="4" height="8" fill="#2b1d0c"/>
-                    <rect class="pixel" x="82" y="82" width="4" height="8" fill="#2b1d0c"/>
-                </g>
-
-                <g id="char-happy" class="hidden">
-                    <g id="happy-jump">
-                        <path class="pixel" d="M74,50 L86,50 L83,40 L77,40 Z" fill="#b8860b"/>
-                        <rect class="pixel" x="72" y="50" width="16" height="3" fill="#8b0000"/>
-                        <rect class="pixel" x="75" y="53" width="10" height="8" fill="#ffdbac"/>
-                        <path class="pixel" d="M77,55 L79,55 M81,55 L83,55" stroke="#000" stroke-width="1"/>
-                        <rect class="pixel" x="78" y="58" width="4" height="2" fill="#ff6666"/>
-                        <rect class="pixel" x="73" y="61" width="14" height="16" fill="#4a2c11"/>
-                        <rect class="pixel" x="68" y="58" width="4" height="10" fill="#4a2c11"/>
-                        <rect class="pixel" x="88" y="58" width="4" height="10" fill="#4a2c11"/>
-                        <rect class="pixel" x="73" y="77" width="4" height="6" fill="#2b1d0c"/>
-                        <rect class="pixel" x="83" y="77" width="4" height="6" fill="#2b1d0c"/>
-                    </g>
-                    <g id="confetti">
-                        <rect class="pixel" x="40" y="30" width="3" height="3" fill="#ff0"/>
-                        <rect class="pixel" x="120" y="25" width="4" height="4" fill="#ff0055"/>
-                        <rect class="pixel" x="50" y="50" width="3" height="3" fill="#00ffcc"/>
-                        <rect class="pixel" x="110" y="45" width="3" height="3" fill="#ff9900"/>
-                    </g>
-                </g>
-
-                <g id="char-angry" class="hidden">
-                    <rect class="pixel" x="65" y="45" width="30" height="45" fill="rgba(255,0,0,0.2)"/>
-                    <path class="pixel" d="M74,55 L86,55 L83,45 L77,45 Z" fill="#8b0000"/>
-                    <rect class="pixel" x="75" y="58" width="10" height="8" fill="#ff8888"/>
-                    <line x1="76" y1="60" x2="79" y2="63" stroke="#000" stroke-width="1"/>
-                    <line x1="84" y1="60" x2="81" y2="63" stroke="#000" stroke-width="1"/>
-                    <rect class="pixel" x="73" y="66" width="14" height="16" fill="#4a2c11"/>
-                    <path class="pixel" d="M40,40 L100,85" stroke="#ffffff" stroke-width="4" stroke-linecap="round"/>
-                    <path class="pixel" d="M45,38 L105,83" stroke="#ff3333" stroke-width="2"/>
-                    <line x1="85" y1="70" x2="115" y2="50" stroke="#c0c0c0" stroke-width="3"/>
-                </g>
-            </g>
-        </svg>
-
-        <div id="feedback-banner" class="feedback-banner hidden"></div>
-    </div>
-
-    <div class="content-area">
-        <div id="question-box" class="question-box">กำลังโหลดคำถาม...</div>
-        <div id="options-grid" class="options-grid"></div>
-    </div>
-
-    <div id="start-screen" class="screen">
-        <h2 style="color: #f3e5ab; margin-bottom: 5px;">📜 กฎหมายพระนครบาล 📜</h2>
-        <p style="color: #ccc; font-size: 14px; line-height: 1.5; margin-bottom: 15px;">
-            ยินดีต้อนรับสู่อโยธยา!<br>
-            แบบทดสอบกฎหมายและระเบียบพระนคร 10 ข้อ<br>
-            (เกณฑ์ผ่าน: 7 ข้อขึ้นไป)
-        </p>
-        <button id="start-btn" class="btn-start">⚔️ คลิกเพื่อเริ่ม (CLICK TO START) ⚔️</button>
-    </div>
-
-    <div id="result-screen" class="screen hidden">
-        <h2 id="result-title" style="color: #f3e5ab; margin-bottom: 10px;">สรุปผลการทดสอบ</h2>
-        <div id="result-score" style="font-size: 28px; font-weight: bold; color: #ffeb3b; margin: 10px 0;">0 / 10</div>
-        <p id="result-desc" style="color: #fff; font-size: 15px; margin-bottom: 20px; line-height: 1.4;"></p>
-        <button id="restart-btn" class="btn-start">🔄 เล่นใหม่อีกครั้ง</button>
-    </div>
-</div>
-
-<script>
-    const AudioContext = window.AudioContext || window.webkitAudioContext;
-    let audioCtx = null;
-
-    function initAudio() {
-        if (!audioCtx) audioCtx = new AudioContext();
-    }
-
-    function playSound(type) {
-        if (!audioCtx) return;
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        const now = audioCtx.currentTime;
-
-        if (type === 'click') {
-            osc.type = 'square'; osc.frequency.setValueAtTime(400, now);
-            gain.gain.setValueAtTime(0.1, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
-            osc.start(now); osc.stop(now + 0.05);
-        } else if (type === 'correct') {
-            osc.type = 'triangle'; osc.frequency.setValueAtTime(523.25, now);
-            osc.frequency.setValueAtTime(659.25, now + 0.08); osc.frequency.setValueAtTime(783.99, now + 0.16);
-            gain.gain.setValueAtTime(0.15, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
-            osc.start(now); osc.stop(now + 0.3);
-        } else if (type === 'wrong') {
-            osc.type = 'sawtooth'; osc.frequency.setValueAtTime(180, now);
-            osc.frequency.setValueAtTime(110, now + 0.1); gain.gain.setValueAtTime(0.2, now);
-            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3); osc.start(now); osc.stop(now + 0.3);
-        } else if (type === 'slash') {
-            osc.type = 'sawtooth'; osc.frequency.setValueAtTime(800, now);
-            osc.frequency.exponentialRampToValueAtTime(40, now + 0.25); gain.gain.setValueAtTime(0.3, now);
-            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25); osc.start(now); osc.stop(now + 0.25);
-        } else if (type === 'cheer') {
-            osc.type = 'sine'; osc.frequency.setValueAtTime(523.25, now);
-            osc.frequency.setValueAtTime(659.25, now + 0.1); osc.frequency.setValueAtTime(783.99, now + 0.2);
-            osc.frequency.setValueAtTime(1046.50, now + 0.3); gain.gain.setValueAtTime(0.2, now);
-            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.6); osc.start(now); osc.stop(now + 0.6);
-        }
-    }
-
-    const rawQuestions = [
-        {
-            q: "การแต่งกายไม่ถูกต้องตามยุคและระเบียบ หากไม่ยอมเปลี่ยน สามารถจับกุมได้กี่วินาที?",
-            options: ["60 วินาที", "120 วินาที", "300 วินาที", "600 วินาที"],
-            answer: 1,
-            reason: "ให้ตักเตือนก่อน หากไม่ยอมเปลี่ยน จับกุมได้ 120 วินาที"
-        },
-        {
-            q: "การยิงปืนในพระนครโดยไม่มีผู้เสียชีวิต ให้จับกุมกี่วินาที?",
-            options: ["120 วินาที", "300 วินาที", "600 วินาที", "1200 วินาที"],
-            answer: 2,
-            reason: "ยิงปืนในพระนครไม่มีผู้เสียชีวิต จับกุม 600 วินาที (ทำผิดซ้ำซากเพิ่มเป็น 900 วิ)"
-        },
-        {
-            q: "การฆ่ากันจนถึงแก่ความตาย ให้จับกุมเป็นเวลากี่วินาที?",
-            options: ["600 วินาที", "900 วินาที", "1200 - 1800 วินาที", "2400 วินาที"],
-            answer: 2,
-            reason: "ฆ่ากันถึงแก่ความตาย ให้จับกุม 1200-1800 วินาที โดยไม่ต้องตักเตือน"
-        },
-        {
-            q: "การจับกุมมากหรือน้อยกว่าที่กำหนดไว้ในกฎหมายถือเป็นอย่างไร?",
-            options: ["ถือเป็นความชอบธรรม", "ถือเป็นความผิด", "ทำได้หากผู้ร้ายขัดขืน", "ได้รับการละเว้น"],
-            answer: 1,
-            reason: "การจับกุมมากหรือน้อยกว่าที่กำหนดถือเป็นความผิด"
-        },
-        {
-            q: "กรณีขุนนางกระทำความผิด โทษสูงสุดหรือการดำเนินการคือข้อใด?",
-            options: ["จำคุก 1000 วิ", "ริบทรัพย์", "ประหารชีวิต", "ปลดจ่า / ลงบรรดาศักดิ์ / จำคุก / ปรับ"],
-            answer: 3,
-            reason: "กำหนดโทษสำหรับขุนนางคือ ปลดจ่า / ลงบรรดาศักดิ์ / จำคุก / ปรับ"
-        },
-        {
-            q: "การทำผิดฐานฆ่าผู้อื่น มีโทษอย่างไร?",
-            options: ["จำคุก 600 วิ", "จำคุก 1050 วิ / ปรับ 5000 พดด้วง", "จำคุก 1500 วิ", "ประหารชีวิต"],
-            answer: 1,
-            reason: "กำหนดโทษฆ่าผู้อื่น: จำคุก 1050 วิ / ปรับ 5000 พดด้วง"
-        },
-        {
-            q: "การขโมยม้าลำปางรอง มีโทษจำคุกกี่วินาที?",
-            options: ["300 วิ", "500 วิ", "750 วิ", "1800 วิ"],
-            answer: 1,
-            reason: "ขโมยม้าลำปางรอง มีโทษจำคุก 500 วิ"
-        },
-        {
-            q: "การกระทำตั้งแต่ 5 คนขึ้นไปร่วมกระทำความผิด เรียกว่าอะไร?",
-            options: ["ซ่องโจร", "ขบถพระนคร", "วางเพลิง", "ก่อสุมรุมสเกล"],
-            answer: 0,
-            reason: "การร่วมกระทำผิดตั้งแต่ 5 คนขึ้นไป เรียกว่า 'ซ่องโจร' (จำคุก 1200 วิ)"
-        },
-        {
-            q: "การป้องกันตัวเกินกว่าเหตุ มีโทษอย่างไร?",
-            options: ["จำคุก 120 วิ", "จำคุก 350 วิ", "จำคุก 500 วิ", "จำคุก 750 วิ"],
-            answer: 1,
-            reason: "ป้องกันตัวเกินกว่าเหตุ มีโทษจำคุก 350 วิ"
-        },
-        {
-            q: "ขุนนางกระทำความผิด มีโทษอย่างไรเทียบกับคนทั่วไป?",
-            options: ["โทษเท่ากัน", "รับโทษ 2 เท่า", "ลดโทษกึ่งหนึ่ง", "ไม่ต้องรับโทษ"],
-            answer: 1,
-            reason: "ขุนนางกระทำความผิด รับโทษเป็น 2 เท่า"
-        }
-    ];
-
-    let questions = [];
-    let currentQuestionIndex = 0;
-    let score = 0;
-
-    function shuffleArray(array) {
-        const arr = [...array];
-        for (let i = arr.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [arr[i], arr[j]] = [arr[j], arr[i]];
-        }
-        return arr;
-    }
-
-    const startScreen = document.getElementById('start-screen');
-    const resultScreen = document.getElementById('result-screen');
-    const startBtn = document.getElementById('start-btn');
-    const restartBtn = document.getElementById('restart-btn');
-    const questionBox = document.getElementById('question-box');
-    const optionsGrid = document.getElementById('options-grid');
-    const progressText = document.getElementById('progress-text');
-    const scoreText = document.getElementById('score-text');
-    const feedbackBanner = document.getElementById('feedback-banner');
-
-    const charNormal = document.getElementById('char-normal');
-    const charHappy = document.getElementById('char-happy');
-    const charAngry = document.getElementById('char-angry');
-
-    function handleStart() {
-        initAudio();
-        playSound('click');
-        startGame();
-    }
-
-    startBtn.addEventListener('click', handleStart);
-    startBtn.addEventListener('touchstart', (e) => { e.preventDefault(); handleStart(); });
-    restartBtn.addEventListener('click', handleStart);
-    restartBtn.addEventListener('touchstart', (e) => { e.preventDefault(); handleStart(); });
-
-    function startGame() {
-        questions = shuffleArray(rawQuestions);
-        currentQuestionIndex = 0;
-        score = 0;
-
-        startScreen.classList.add('hidden');
-        resultScreen.classList.add('hidden');
+    <!-- Main Game Container -->
+    <div class="w-full max-w-lg pixel-box p-4 sm:p-6 rounded-lg text-amber-950 overflow-hidden relative shadow-2xl">
         
-        resetCharState();
-        updateHeader();
-        loadQuestion();
-    }
+        <!-- Header Banner -->
+        <div class="pixel-box-dark text-center p-3 mb-4 rounded border-amber-500">
+            <div class="flex justify-center items-center gap-2 mb-1">
+                <svg class="w-7 h-7 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-5.45 9-12V5l-9-3zm0 4a3 3 0 110 6 3 3 0 010-6zm0 14c-2.67 0-8 1.34-8 4v1h16v-1c0-2.66-5.33-4-8-4z"/>
+                </svg>
+                <h1 class="text-xl sm:text-2xl font-extrabold tracking-wider text-amber-300 drop-shadow">
+                    กรมพระนครบาล
+                </h1>
+                <svg class="w-7 h-7 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-5.45 9-12V5l-9-3zm0 4a3 3 0 110 6 3 3 0 010-6zm0 14c-2.67 0-8 1.34-8 4v1h16v-1c0-2.66-5.33-4-8-4z"/>
+                </svg>
+            </div>
+            <p class="text-xs text-amber-200 font-medium">แบบทดสอบความรู้กฎหมายและกฎเหล็กการใช้กุญแจมือ (10 ข้อ)</p>
+        </div>
 
-    function resetCharState() {
-        charNormal.classList.remove('hidden');
-        charHappy.classList.add('hidden');
-        charAngry.classList.add('hidden');
-    }
+        <!-- SCREEN 1: START / COVER SCREEN -->
+        <div id="start-screen" class="text-center py-4">
+            <div class="my-6 relative flex justify-center">
+                <div class="w-32 h-32 bg-amber-200 border-4 border-amber-900 rounded-full flex items-center justify-center overflow-hidden shadow-inner relative">
+                    <!-- SVG Pixel Officer -->
+                    <svg class="w-24 h-24" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M20 20H44V24H20V20Z" fill="#78350F"/>
+                        <path d="M24 14H40V20H24V14Z" fill="#B45309"/>
+                        <path d="M30 8H34V14H30V8Z" fill="#FBBF24"/>
+                        <path d="M22 24H42V40H22V24Z" fill="#FDBA74"/>
+                        <rect x="26" y="28" width="4" height="6" fill="#1E293B"/>
+                        <rect x="34" y="28" width="4" height="6" fill="#1E293B"/>
+                        <path d="M26 36H38V38H26V36Z" fill="#451A03"/>
+                        <path d="M18 40H46V56H18V40Z" fill="#991B1B"/>
+                        <path d="M30 40H34V56H30V40Z" fill="#FBBF24"/>
+                    </svg>
+                </div>
+            </div>
 
-    function updateHeader() {
-        progressText.innerText = `ข้อที่: ${currentQuestionIndex + 1}/${questions.length}`;
-        scoreText.innerText = `คะแนน: ${score}`;
-    }
+            <div class="bg-amber-100/90 p-4 rounded border-2 border-amber-800 text-left text-sm mb-6 space-y-2">
+                <p class="font-bold text-amber-900 border-b border-amber-300 pb-1">📜 กฎระเบียบแบบทดสอบ:</p>
+                <p>• ทำแบบทดสอบทั้งหมด <strong>10 ข้อ</strong> ต่อเนื่องจนจบ</p>
+                <p>• เกณฑ์การสอบผ่าน: ต้องได้คะแนนตั้งแต่ <strong>7 ข้อขึ้นไป (70%)</strong></p>
+                <p>• หากทำผ่าน: รับคำชมเชยจากกรมพระนครบาล 🎉</p>
+                <p>• หากไม่ผ่าน: ระวังจะถูกนครบาลดุร้ายลงโทษฟันดาบ! ⚔️</p>
+            </div>
 
-    function loadQuestion() {
-        const q = questions[currentQuestionIndex];
-        questionBox.innerText = q.q;
-        optionsGrid.innerHTML = '';
+            <button id="start-btn" type="button" class="pixel-btn w-full py-4 text-lg sm:text-xl rounded text-amber-950 font-black tracking-wider uppercase cursor-pointer">
+                ⚔️ คลิกเพื่อเริ่ม (CLICK TO START) ⚔️
+            </button>
+        </div>
 
-        q.options.forEach((opt, idx) => {
-            const btn = document.createElement('button');
-            btn.className = 'btn-option';
-            btn.innerText = `${String.fromCharCode(65 + idx)}. ${opt}`;
-            btn.onclick = () => selectOption(idx);
-            optionsGrid.appendChild(btn);
+        <!-- SCREEN 2: QUIZ SCREEN -->
+        <div id="quiz-screen" class="hidden">
+            <!-- HUD / Status Bar -->
+            <div class="flex justify-between items-center mb-3 text-xs sm:text-sm font-bold bg-amber-200/90 p-2.5 rounded border-2 border-amber-800">
+                <div class="font-pixel text-amber-900">
+                    ข้อที่ <span id="current-q-num" class="text-amber-700 text-base">1</span>/10
+                </div>
+
+                <div class="flex items-center gap-1 text-amber-900">
+                    <span>คะแนนสะสม:</span>
+                    <span id="score-val" class="text-green-700 font-pixel text-base">0</span>
+                    <span>ข้อ</span>
+                </div>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="w-full pixel-progress-bg h-3 mb-4 rounded-full overflow-hidden">
+                <div id="progress-fill" class="pixel-progress-fill" style="width: 10%;"></div>
+            </div>
+
+            <!-- Question Card -->
+            <div class="pixel-box-dark p-4 rounded mb-4 text-center min-h-[110px] flex items-center justify-center">
+                <h2 id="question-text" class="text-base sm:text-lg font-bold leading-snug text-amber-100">
+                    คำถามจะปรากฏที่นี่...
+                </h2>
+            </div>
+
+            <!-- Answer Options -->
+            <div id="options-container" class="grid grid-cols-1 gap-2.5 mb-4">
+                <!-- Buttons injected by JS -->
+            </div>
+
+            <!-- Instant Feedback Banner -->
+            <div id="feedback-banner" class="hidden text-center p-2.5 rounded text-xs sm:text-sm font-bold border-2">
+                <!-- Feedback message injected by JS -->
+            </div>
+        </div>
+
+        <!-- SCREEN 3: RESULTS SCREEN WITH PIXEL ANIMATION -->
+        <div id="result-screen" class="hidden text-center py-2">
+            <h2 id="result-title" class="text-2xl font-black text-amber-900 mb-1">สรุปผลการสอบนครบาล</h2>
+
+            <!-- Canvas Display for Pixel Character Animation -->
+            <div class="my-3 flex justify-center">
+                <div class="pixel-box-dark p-2 rounded border-4 border-amber-800 bg-amber-950 flex flex-col items-center">
+                    <canvas id="pixel-anim-canvas" width="220" height="150" class="rounded bg-slate-900"></canvas>
+                </div>
+            </div>
+            
+            <div id="rank-badge" class="my-2 inline-block px-4 py-1.5 bg-amber-300 border-4 border-amber-900 rounded-lg text-base sm:text-lg font-black text-amber-950 shadow">
+                ตำแหน่ง: ขุนปราบพระนคร
+            </div>
+
+            <div class="pixel-box p-3 my-3 rounded text-left space-y-1.5 text-sm">
+                <div class="flex justify-between items-center border-b border-amber-300 pb-1.5">
+                    <span class="font-bold">คะแนนรวมที่ได้:</span>
+                    <span id="final-score" class="font-pixel text-lg text-amber-800">0 / 10</span>
+                </div>
+                <div class="flex justify-between items-center border-b border-amber-300 pb-1.5">
+                    <span class="font-bold">คิดเป็นเปอร์เซ็นต์:</span>
+                    <span id="final-percent" class="font-bold text-amber-900">0%</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="font-bold">ผลการทดสอบ:</span>
+                    <span id="final-status" class="font-bold">ผ่านเกณฑ์</span>
+                </div>
+            </div>
+
+            <div id="result-evaluation" class="text-xs sm:text-sm text-amber-900 italic mb-4 bg-amber-100 p-2.5 rounded border border-amber-400">
+                <!-- Evaluation quote injected by JS -->
+            </div>
+
+            <button id="restart-btn" type="button" class="pixel-btn w-full py-3 text-base sm:text-lg rounded text-amber-950 font-black tracking-wider uppercase cursor-pointer">
+                🔄 ทำแบบทดสอบอีกครั้ง
+            </button>
+        </div>
+
+        <!-- Footer -->
+        <div class="mt-4 pt-3 border-t-2 border-amber-900/30 text-center text-[10px] sm:text-xs text-amber-800">
+            กรมพระนครบาล - ผู้รักษาความสงบเรียบร้อยแห่งพระนครศรีอโยธยา
+        </div>
+    </div>
+
+    <!-- Game Logic & Audio JavaScript -->
+    <script>
+        class PixelAudio {
+            constructor() {
+                this.ctx = null;
+            }
+
+            init() {
+                if (!this.ctx) {
+                    this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                if (this.ctx && this.ctx.state === 'suspended') {
+                    this.ctx.resume();
+                }
+            }
+
+            playBleep(freq = 440, type = 'square', duration = 0.1) {
+                this.init();
+                if (!this.ctx) return;
+                try {
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.type = type;
+                    osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+                    gain.gain.setValueAtTime(0.1, this.ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + duration);
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start();
+                    osc.stop(this.ctx.currentTime + duration);
+                } catch (e) {}
+            }
+
+            playCorrect() {
+                this.init();
+                [523.25, 659.25, 783.99, 1046.50].forEach((f, i) => {
+                    setTimeout(() => this.playBleep(f, 'triangle', 0.12), i * 80);
+                });
+            }
+
+            playWrong() {
+                this.init();
+                [220, 196, 164].forEach((f, i) => {
+                    setTimeout(() => this.playBleep(f, 'sawtooth', 0.15), i * 100);
+                });
+            }
+
+            playClick() {
+                this.init();
+                this.playBleep(600, 'square', 0.05);
+            }
+
+            playVictory() {
+                this.init();
+                const notes = [440, 554.37, 659.25, 880, 783.99, 880, 1046.5];
+                notes.forEach((f, i) => {
+                    setTimeout(() => this.playBleep(f, 'triangle', 0.2), i * 140);
+                });
+            }
+
+            playSlash() {
+                this.init();
+                if (!this.ctx) return;
+                try {
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(800, this.ctx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(100, this.ctx.currentTime + 0.2);
+                    gain.gain.setValueAtTime(0.2, this.ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.2);
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start();
+                    osc.stop(this.ctx.currentTime + 0.2);
+                } catch (e) {}
+            }
+        }
+
+        const sound = new PixelAudio();
+
+        // 10 Questions based strictly on the Ayutthaya Law Images
+        const questionsData = [
+            {
+                q: "1. หากพบการแต่งกายไม่ถูกต้องตามยุคและระเบียบ แล้วไม่ยอมเปลี่ยน เจ้าพนักงานจับกุมได้กี่วินาที?",
+                options: ["60 วินาที", "120 วินาที", "300 วินาที", "600 วินาที"],
+                correct: 1,
+                hint: "ตามกฎเหล็กข้อที่ 1: ตักเตือนก่อนทุกครั้ง หากไม่ยอมเปลี่ยนจับกุมได้ 120 วินาที"
+            },
+            {
+                q: "2. ยิงปืนในพระนครโดยไม่มีผู้เสียชีวิต ให้จับกุมกี่วินาที?",
+                options: ["120 วินาที", "300 วินาที", "600 วินาที", "900 วินาที"],
+                correct: 2,
+                hint: "ตามกฎเหล็กข้อที่ 2: ยิงปืนในพระนครไม่ว่าด้วยเหตุผลใด ถ้าไม่มีคนเสียชีวิต จับ 600 วินาที"
+            },
+            {
+                q: "3. หากยิงปืนในพระนครและทำผิดซ้ำซาก สามารถเพิ่มเวลาจับกุมได้สูงสุดกี่วินาที?",
+                options: ["700 วินาที", "800 วินาที", "900 วินาที", "1200 วินาที"],
+                correct: 2,
+                hint: "ตามกฎเหล็กข้อที่ 2: หากทำผิดซ้ำซาก เพิ่มเวลาได้ถึง 900 วินาที"
+            },
+            {
+                q: "4. การยิงปืนกรณีใดในพระนครที่ได้รับการยกเว้นไม่ถือเป็นความผิด?",
+                options: ["ยิงขึ้นฟ้าขู่", "ยิงไล่สัตว์", "ยิงงานเทศกาล", "ยิงโจร / ยิงโจรสลัด"],
+                correct: 3,
+                hint: "ตามกฎเหล็กข้อที่ 2: ยกเว้นการยิงโจร"
+            },
+            {
+                q: "5. การฆ่ากันจนถึงแก่ความตาย ให้จับกุมกี่วินาที โดยไม่ต้องตักเตือนสอบถาม?",
+                options: ["600 - 900 วินาที", "900 - 1200 วินาที", "1200 - 1800 วินาที", "2400 วินาที"],
+                correct: 2,
+                hint: "ตามกฎเหล็กข้อที่ 3: ฆ่ากันจนถึงแก่ความตาย จับกุม 1200-1800 วินาที"
+            },
+            {
+                q: "6. การจับกุมมากหรือน้อยกว่าที่กำหนดไว้ในกฎหมายและกฎเหล็ก ถือเป็นอย่างไร?",
+                options: ["ทำได้ตามดุลพินิจ", "ถือเป็นความผิด", "ได้รับการยกเว้น", "ตักเตือนเจ้าพนักงาน"],
+                correct: 1,
+                hint: "ตามกฎเหล็กข้อที่ 4: การจับกุมมากหรือน้อยกว่าที่กำหนด ให้ถือเป็นความผิด"
+            },
+            {
+                q: "7. ผู้ใดฝ่าฝืนกฎเหล็กการใช้กุญแจมือ จะได้รับโทษอย่างไร?",
+                options: ["ปรับ 50 พดด้วง", "ถูกลงโทษตามกฎหมายอย่างเฉียบขาด", "กักขัง 3 วัน", "ริบทรัพย์สิน"],
+                correct: 1,
+                hint: "ตามประกาศกฎเหล็ก: ผู้ฝ่าฝืนจะถูกลงโทษตามกฎหมายอย่างเฉียบขาด"
+            },
+            {
+                q: "8. ก่อนดำเนินการจับกุมเรื่องการแต่งกาย เจ้าพนักงานต้องทำสิ่งใดก่อนทุกครั้ง?",
+                options: ["ตักเตือนก่อนทุกครั้ง", "แจ้งขุนนาง", "ปรับเงินทันที", "ริบเครื่องแต่งกาย"],
+                correct: 0,
+                hint: "ตามกฎเหล็กข้อที่ 1: ให้กรมตำรวจและกรมพระนครบาลตักเตือนก่อนทุกครั้ง"
+            },
+            {
+                q: "9. ตามหมวด 4 มาตรา 21 การป้องกันตัวเกินกว่าเหตุ มีโทษอย่างไร?",
+                options: ["ริบทรัพย์สิน", "จำคุก 350 วินาที", "จำคุก 600 วินาที", "ปรับ 1000 พดด้วง"],
+                correct: 1,
+                hint: "ตามมาตรา 21: การป้องกันตัวเกินกว่าเหตุ มีโทษจำคุก 350 วินาที"
+            },
+            {
+                q: "10. ตามหมวด 7 มาตรา 67 ขุนนางกระทำความผิด มีโทษอย่างไรเทียบกับคนทั่วไป?",
+                options: ["ลดโทษกึ่งหนึ่ง", "โทษเท่ากัน", "รับโทษ 2 เท่า", "ไม่ต้องรับโทษ"],
+                correct: 2,
+                hint: "ตามมาตรา 67: ขุนนางกระทำความผิด ให้ลงโทษ 2 เท่า"
+            }
+        ];
+
+        let questionsDataActive = [];
+        let currentQuestion = 0;
+        let score = 0;
+        let isAnswering = false;
+        let animId = null;
+
+        // Fisher-Yates Shuffle Algorithm for randomizing questions
+        function shuffleQuestions(array) {
+            const arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        function startGame() {
+            sound.playClick();
+            if (animId) cancelAnimationFrame(animId);
+            
+            // Randomize questions list each start
+            questionsDataActive = shuffleQuestions(questionsData);
+            
+            currentQuestion = 0;
+            score = 0;
+            isAnswering = false;
+
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('hidden');
+
+            updateHUD();
+            loadQuestion();
+        }
+
+        function updateHUD() {
+            document.getElementById('score-val').innerText = score;
+            document.getElementById('current-q-num').innerText = currentQuestion + 1;
+            const progressPercent = ((currentQuestion + 1) / questionsDataActive.length) * 100;
+            document.getElementById('progress-fill').style.width = `${progressPercent}%`;
+        }
+
+        function loadQuestion() {
+            isAnswering = false;
+            const qData = questionsDataActive[currentQuestion];
+            document.getElementById('question-text').innerText = qData.q;
+            
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+
+            const feedbackBanner = document.getElementById('feedback-banner');
+            feedbackBanner.classList.add('hidden');
+
+            qData.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'pixel-btn w-full py-2.5 px-3 text-sm sm:text-base rounded text-left flex items-center gap-2 cursor-pointer';
+                btn.innerHTML = `
+                    <span class="w-6 h-6 rounded-full bg-amber-900 text-amber-100 flex items-center justify-center font-pixel text-xs border border-amber-700">${String.fromCharCode(65 + idx)}</span>
+                    <span>${opt}</span>
+                `;
+                btn.addEventListener('click', () => selectAnswer(idx, btn));
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function selectAnswer(selectedIndex, btnElement) {
+            if (isAnswering) return;
+            isAnswering = true;
+
+            const qData = questionsDataActive[currentQuestion];
+            const allBtns = document.getElementById('options-container').children;
+            const feedbackBanner = document.getElementById('feedback-banner');
+
+            if (selectedIndex === qData.correct) {
+                sound.playCorrect();
+                btnElement.classList.add('pixel-btn-correct');
+                score++;
+                
+                feedbackBanner.className = "p-2.5 rounded text-xs sm:text-sm font-bold bg-green-200 border-green-800 text-green-950 mb-3 text-left";
+                feedbackBanner.innerHTML = `✅ <strong>ถูกต้อง!</strong> ${qData.hint}`;
+            } else {
+                sound.playWrong();
+                btnElement.classList.add('pixel-btn-wrong');
+                if (allBtns[qData.correct]) {
+                    allBtns[qData.correct].classList.add('pixel-btn-correct');
+                }
+
+                feedbackBanner.className = "p-2.5 rounded text-xs sm:text-sm font-bold bg-red-200 border-red-800 text-red-950 mb-3 text-left";
+                feedbackBanner.innerHTML = `❌ <strong>ผิดเสียแล้ว!</strong> ${qData.hint}`;
+            }
+
+            feedbackBanner.classList.remove('hidden');
+            updateHUD();
+
+            Array.from(allBtns).forEach(b => b.disabled = true);
+
+            setTimeout(() => {
+                if (currentQuestion >= questionsDataActive.length - 1) {
+                    showResults();
+                } else {
+                    currentQuestion++;
+                    updateHUD();
+                    loadQuestion();
+                }
+            }, 1600);
+        }
+
+        function showResults() {
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+
+            const isPassed = score >= 7;
+            const percentage = (score / 10) * 100;
+
+            document.getElementById('final-score').innerText = `${score} / 10 ข้อ`;
+            document.getElementById('final-percent').innerText = `${percentage}%`;
+
+            const rankBadge = document.getElementById('rank-badge');
+            const resultEval = document.getElementById('result-evaluation');
+            const finalStatus = document.getElementById('final-status');
+
+            if (isPassed) {
+                sound.playVictory();
+                finalStatus.innerText = "🎉 ผ่านเกณฑ์การสอบ";
+                finalStatus.className = "font-bold text-green-700";
+                
+                if (score === 10) {
+                    rankBadge.innerText = "👑 ตำแหน่ง: แม่ทัพนครบาลยอดเยี่ยม";
+                    resultEval.innerText = '"สุดยอดมาก! ท่านทำคะแนนเต็ม 10 ข้อ รอบรู้ในกฎหมายและกฎเหล็กนครบาลอย่างหาตัวจับยาก!"';
+                } else {
+                    rankBadge.innerText = "🗡️ ตำแหน่ง: ขุนปราบพระนครบาล";
+                    resultEval.innerText = '"ยินดีด้วย! ท่านผ่านการสอบนครบาล (7 ข้อขึ้นไป) มีความรอบรู้เพียงพอในการดูแลความสงบอโยธยา"';
+                }
+
+                startHappyAnimation();
+            } else {
+                sound.playSlash();
+                finalStatus.innerText = "⚠️ ไม่ผ่านเกณฑ์ (ต้องได้ 7 ขึ้นไป)";
+                finalStatus.className = "font-bold text-red-600";
+                
+                rankBadge.innerText = "💀 ตำแหน่ง: ผู้ต้องโทษฝ่าฝืนกฎเหล็ก";
+                resultEval.innerText = '"ท่านได้คะแนนไม่ถึง 7 ข้อ! กรมพระนครบาลดุร้ายกริ้วยิ่งนัก ถูกลงโทษฟันดาบตามกฎเหล็ก!"';
+
+                startAngrySlashAnimation();
+            }
+        }
+
+        // Attach Event Listeners Safely
+        window.addEventListener('DOMContentLoaded', () => {
+            const startBtn = document.getElementById('start-btn');
+            const restartBtn = document.getElementById('restart-btn');
+
+            if (startBtn) {
+                startBtn.addEventListener('click', startGame);
+                startBtn.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    startGame();
+                });
+            }
+
+            if (restartBtn) {
+                restartBtn.addEventListener('click', startGame);
+                restartBtn.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    startGame();
+                });
+            }
         });
 
-        updateHeader();
-    }
+        /* -------------------------------------------------------------
+           PIXEL CANVAS ANIMATION SYSTEM
+           ------------------------------------------------------------- */
+        const canvas = document.getElementById('pixel-anim-canvas');
+        const ctx = canvas.getContext('2d');
+        ctx.imageSmoothingEnabled = false;
 
-    function selectOption(selectedIndex) {
-        const q = questions[currentQuestionIndex];
-        const buttons = optionsGrid.children;
-
-        for (let btn of buttons) {
-            btn.style.pointerEvents = 'none';
-        }
-
-        if (selectedIndex === q.answer) {
-            score++;
-            buttons[selectedIndex].classList.add('correct');
-            playSound('correct');
-            showFeedback(true, "ถูกต้อง! " + q.reason);
-        } else {
-            buttons[selectedIndex].classList.add('wrong');
-            buttons[q.answer].classList.add('correct');
-            playSound('wrong');
-            showFeedback(false, "ผิด! " + q.reason);
-        }
-
-        scoreText.innerText = `คะแนน: ${score}`;
-
-        setTimeout(() => {
-            hideFeedback();
-            currentQuestionIndex++;
-            if (currentQuestionIndex < questions.length) {
-                loadQuestion();
-            } else {
-                endGame();
+        let particles = [];
+        function initHappyParticles() {
+            particles = [];
+            for(let i=0; i<35; i++){
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height - canvas.height,
+                    size: Math.floor(Math.random() * 4) + 2,
+                    color: ['#facc15', '#4ade80', '#60a5fa', '#f43f5e', '#a855f7'][Math.floor(Math.random() * 5)],
+                    speedY: Math.random() * 2 + 1,
+                    speedX: (Math.random() - 0.5) * 1
+                });
             }
-        }, 2200);
-    }
-
-    function showFeedback(isCorrect, text) {
-        feedbackBanner.innerText = isCorrect ? "✨ ถูกต้อง!" : "❌ ผิด!";
-        feedbackBanner.className = `feedback-banner ${isCorrect ? 'feedback-correct' : 'feedback-wrong'}`;
-        feedbackBanner.classList.remove('hidden');
-        questionBox.innerText = text;
-    }
-
-    function hideFeedback() {
-        feedbackBanner.classList.add('hidden');
-    }
-
-    function endGame() {
-        const passed = score >= 7;
-
-        charNormal.classList.add('hidden');
-        
-        if (passed) {
-            charHappy.classList.remove('hidden');
-            playSound('cheer');
-            document.getElementById('result-title').innerText = "🎉 ผ่านการทดสอบ! 🎉";
-            document.getElementById('result-title').style.color = "#55ff55";
-            document.getElementById('result-desc').innerText = "ยินดีด้วย! ท่านมีความเชี่ยวชาญกฎหมายพระนครบาล เหมาะสมแก่การรับราชการรักษาความสงบ!";
-        } else {
-            charAngry.classList.remove('hidden');
-            playSound('slash');
-            document.getElementById('result-title').innerText = "⚔️ ไม่ผ่านการทดสอบ! ⚔️";
-            document.getElementById('result-title').style.color = "#ff4444";
-            document.getElementById('result-desc').innerText = "ความรู้กฎหมายยังไม่เพียงพอ! กรมพระนครบาลลงโทษประหาร/ฟันดาบ ไปทบทวนกฎหมายมาใหม่!";
         }
 
-        document.getElementById('result-score').innerText = `${score} / ${questions.length} คะแนน`;
-        resultScreen.classList.remove('hidden');
-    }
-</script>
+        function startHappyAnimation() {
+            initHappyParticles();
+            let frame = 0;
 
+            function animate() {
+                frame++;
+                ctx.fillStyle = '#0f172a';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                ctx.fillStyle = '#1e293b';
+                ctx.fillRect(0, 110, canvas.width, 40);
+
+                particles.forEach(p => {
+                    p.y += p.speedY;
+                    p.x += p.speedX;
+                    if(p.y > canvas.height) p.y = -10;
+                    ctx.fillStyle = p.color;
+                    ctx.fillRect(p.x, p.y, p.size, p.size);
+                });
+
+                const jumpY = Math.abs(Math.sin(frame * 0.15)) * 16;
+                const charX = canvas.width / 2 - 20;
+                const charY = 65 - jumpY;
+
+                drawPixelOfficer(charX, charY, 'happy', frame);
+
+                if(frame % 20 < 10) {
+                    drawPixelStar(charX - 25, charY + 10, '#facc15');
+                    drawPixelStar(charX + 45, charY + 5, '#facc15');
+                }
+
+                ctx.font = '12px Silkscreen, Prompt, sans-serif';
+                ctx.fillStyle = '#4ade80';
+                ctx.textAlign = 'center';
+                ctx.fillText('PASSED! NAKORNBAN HAPPY', canvas.width/2, 140);
+
+                animId = requestAnimationFrame(animate);
+            }
+            animate();
+        }
+
+        let slashEffectFrame = 0;
+        function startAngrySlashAnimation() {
+            slashEffectFrame = 0;
+            let frame = 0;
+
+            function animate() {
+                frame++;
+                slashEffectFrame++;
+
+                if(slashEffectFrame % 30 < 5) {
+                    ctx.fillStyle = '#450a0a';
+                } else {
+                    ctx.fillStyle = '#180808';
+                }
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                ctx.fillStyle = '#290606';
+                ctx.fillRect(0, 110, canvas.width, 40);
+
+                const charX = canvas.width / 2 - 20;
+                const charY = 65;
+
+                const shakeX = (slashEffectFrame % 20 < 10) ? (Math.random()*4 - 2) : 0;
+
+                drawPixelOfficer(charX + shakeX, charY, 'angry', frame);
+
+                if (slashEffectFrame % 30 >= 10 && slashEffectFrame % 30 <= 20) {
+                    if (slashEffectFrame % 30 === 10) sound.playSlash();
+                    
+                    ctx.strokeStyle = '#ffffff';
+                    ctx.lineWidth = 4;
+                    ctx.beginPath();
+                    ctx.moveTo(charX + 35, charY - 10);
+                    ctx.lineTo(charX - 25, charY + 45);
+                    ctx.stroke();
+
+                    ctx.strokeStyle = '#ef4444';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.moveTo(charX + 40, charY - 5);
+                    ctx.lineTo(charX - 20, charY + 50);
+                    ctx.stroke();
+
+                    for(let i=0; i<6; i++) {
+                        ctx.fillStyle = '#facc15';
+                        ctx.fillRect(charX - 10 + (Math.random()*30), charY + (Math.random()*40), 3, 3);
+                    }
+                }
+
+                ctx.font = '12px Silkscreen, Prompt, sans-serif';
+                ctx.fillStyle = '#ef4444';
+                ctx.textAlign = 'center';
+                ctx.fillText('FAILED! ANGRY SLASH!', canvas.width/2, 140);
+
+                animId = requestAnimationFrame(animate);
+            }
+            animate();
+        }
+
+        function drawPixelOfficer(x, y, state, frame) {
+            ctx.fillStyle = '#78350F'; ctx.fillRect(x + 10, y, 20, 4);
+            ctx.fillStyle = '#B45309'; ctx.fillRect(x + 12, y - 6, 16, 6);
+            ctx.fillStyle = '#FBBF24'; ctx.fillRect(x + 18, y - 10, 4, 4);
+
+            ctx.fillStyle = (state === 'angry') ? '#fca5a5' : '#FDBA74';
+            ctx.fillRect(x + 10, y + 4, 20, 14);
+
+            if (state === 'happy') {
+                ctx.fillStyle = '#1E293B';
+                ctx.fillRect(x + 13, y + 8, 4, 2);
+                ctx.fillRect(x + 23, y + 8, 4, 2);
+                ctx.fillStyle = '#991B1B';
+                ctx.fillRect(x + 16, y + 13, 8, 3);
+            } else {
+                ctx.fillStyle = '#1E293B';
+                ctx.fillRect(x + 13, y + 8, 4, 3);
+                ctx.fillRect(x + 23, y + 8, 4, 3);
+                ctx.fillStyle = '#451A03';
+                ctx.beginPath();
+                ctx.moveTo(x + 12, y + 6); ctx.lineTo(x + 18, y + 9);
+                ctx.moveTo(x + 28, y + 6); ctx.lineTo(x + 22, y + 9);
+                ctx.stroke();
+                ctx.fillStyle = '#451A03';
+                ctx.fillRect(x + 15, y + 14, 10, 2);
+            }
+
+            ctx.fillStyle = '#451A03';
+            ctx.fillRect(x + 13, y + 12, 14, 2);
+
+            ctx.fillStyle = '#991B1B';
+            ctx.fillRect(x + 8, y + 18, 24, 16);
+            ctx.fillStyle = '#FBBF24';
+            ctx.fillRect(x + 18, y + 18, 4, 16);
+
+            if (state === 'happy') {
+                ctx.fillStyle = '#991B1B';
+                ctx.fillRect(x + 2, y + 14, 6, 12);
+                ctx.fillRect(x + 32, y + 14, 6, 12);
+                ctx.fillStyle = '#FDBA74';
+                ctx.fillRect(x + 2, y + 10, 6, 4);
+                ctx.fillRect(x + 32, y + 10, 6, 4);
+            } else {
+                ctx.fillStyle = '#991B1B';
+                ctx.fillRect(x + 2, y + 18, 6, 12);
+                ctx.fillRect(x + 32, y + 14, 8, 8);
+
+                const isSlash = (slashEffectFrame % 30 >= 10 && slashEffectFrame % 30 <= 20);
+                ctx.fillStyle = '#e2e8f0';
+                if (isSlash) {
+                    ctx.fillRect(x + 32, y + 20, 18, 4);
+                    ctx.fillStyle = '#78350F'; ctx.fillRect(x + 28, y + 20, 4, 4);
+                } else {
+                    ctx.fillRect(x + 36, y - 12, 4, 26);
+                    ctx.fillStyle = '#78350F'; ctx.fillRect(x + 36, y + 14, 4, 6);
+                }
+            }
+
+            ctx.fillStyle = '#1e293b';
+            ctx.fillRect(x + 11, y + 34, 6, 10);
+            ctx.fillRect(x + 23, y + 34, 6, 10);
+        }
+
+        function drawPixelStar(x, y, color) {
+            ctx.fillStyle = color;
+            ctx.fillRect(x + 2, y, 2, 6);
+            ctx.fillRect(x, y + 2, 6, 2);
+        }
+    </script>
 </body>
 </html>
