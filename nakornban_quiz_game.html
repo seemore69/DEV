@@ -40,13 +40,11 @@
             border-radius: 8px;
         }
 
-        /* Header */
         .header {
             background: #4a1512;
             border-bottom: 3px solid #8b5a2b;
             padding: 10px;
             text-align: center;
-            position: relative;
         }
 
         .header h1 {
@@ -54,7 +52,6 @@
             font-size: 18px;
             color: #f3e5ab;
             text-shadow: 2px 2px 0px #000;
-            letter-spacing: 1px;
         }
 
         .status-bar {
@@ -67,7 +64,6 @@
             color: #e6c687;
         }
 
-        /* Canvas Screen */
         .stage-view {
             flex: 1;
             position: relative;
@@ -78,14 +74,12 @@
             overflow: hidden;
         }
 
-        /* Pixel Canvas SVG Overlay */
         #pixel-canvas {
             width: 100%;
             height: 100%;
             image-rendering: pixelated;
         }
 
-        /* Content / Question Box */
         .content-area {
             background: #36251e;
             border-top: 3px solid #8b5a2b;
@@ -134,10 +128,6 @@
             border-color: #d4af37;
         }
 
-        .btn-option:active {
-            transform: scale(0.98);
-        }
-
         .btn-option.correct {
             background: #2e5a1c !important;
             border-color: #55ff55 !important;
@@ -150,7 +140,6 @@
             color: #fff !important;
         }
 
-        /* Screen States */
         .screen {
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
@@ -177,17 +166,11 @@
             font-weight: bold;
             cursor: pointer;
             border-radius: 6px;
-            box-shadow: 0 4px 0 #3a0d0d, 0 5px 10px rgba(0,0,0,0.5);
+            box-shadow: 0 4px 0 #3a0d0d;
             margin-top: 15px;
             font-family: 'Sarabun', sans-serif;
         }
 
-        .btn-start:active {
-            transform: translateY(4px);
-            box-shadow: none;
-        }
-
-        /* Feedback Banner */
         .feedback-banner {
             position: absolute;
             top: 50%;
@@ -200,101 +183,66 @@
             border: 2px solid #fff;
             z-index: 5;
             pointer-events: none;
-            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        .feedback-correct {
-            background: #2e5a1c;
-            color: #aaffaa;
-            border-color: #aaffaa;
-        }
-
-        .feedback-wrong {
-            background: #6a1b1b;
-            color: #ffaaaa;
-            border-color: #ffaaaa;
-        }
-
-        @keyframes popIn {
-            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
-            100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
-        }
+        .feedback-correct { background: #2e5a1c; color: #aaffaa; border-color: #aaffaa; }
+        .feedback-wrong { background: #6a1b1b; color: #ffaaaa; border-color: #ffaaaa; }
     </style>
 </head>
 <body>
 
 <div id="game-container">
-    <!-- Header -->
     <div class="header">
         <h1>⚖️ กรมพระนครบาล : แบบทดสอบกฎหมาย ⚖️</h1>
     </div>
 
-    <!-- Status Bar -->
     <div class="status-bar">
         <span id="progress-text">ข้อที่: 1/10</span>
         <span id="score-text">คะแนน: 0</span>
     </div>
 
-    <!-- Pixel Stage View -->
     <div class="stage-view">
         <svg id="pixel-canvas" viewBox="0 0 160 140" xmlns="http://www.w3.org/2000/svg">
             <defs>
-                <style>
-                    .pixel { shape-rendering: crispEdges; }
-                </style>
+                <style>.pixel { shape-rendering: crispEdges; }</style>
             </defs>
-            <!-- Background: Sky & Ayutthaya Temples -->
             <rect class="pixel" x="0" y="0" width="160" height="90" fill="#2d1e29"/>
             <polygon class="pixel" points="10,90 20,40 30,90" fill="#4a3545"/>
             <polygon class="pixel" points="25,90 40,25 55,90" fill="#5c4256"/>
             <polygon class="pixel" points="70,90 90,15 110,90" fill="#6e4f69"/>
             <polygon class="pixel" points="125,90 140,35 155,90" fill="#4a3545"/>
 
-            <!-- Wall / Floor -->
             <rect class="pixel" x="0" y="90" width="160" height="8" fill="#8b5a2b"/>
             <rect class="pixel" x="0" y="98" width="160" height="42" fill="#1c120c"/>
 
-            <!-- Animated Pixel Character Group -->
-            <g id="character-group" transform="translate(0, 0)">
-                <!-- Default Nakornban Police -->
+            <g id="character-group">
                 <g id="char-normal">
-                    <!-- Hat -->
                     <path class="pixel" d="M74,55 L86,55 L83,45 L77,45 Z" fill="#b8860b"/>
                     <rect class="pixel" x="72" y="55" width="16" height="3" fill="#8b0000"/>
-                    <!-- Head -->
                     <rect class="pixel" x="75" y="58" width="10" height="8" fill="#ffdbac"/>
                     <rect class="pixel" x="77" y="61" width="2" height="2" fill="#000"/>
                     <rect class="pixel" x="81" y="61" width="2" height="2" fill="#000"/>
-                    <!-- Body / Uniform -->
                     <rect class="pixel" x="73" y="66" width="14" height="16" fill="#4a2c11"/>
                     <rect class="pixel" x="78" y="66" width="4" height="16" fill="#8b0000"/>
-                    <!-- Belt & Sword -->
                     <rect class="pixel" x="72" y="76" width="16" height="3" fill="#d4af37"/>
                     <rect class="pixel" x="68" y="74" width="4" height="12" fill="#c0c0c0"/>
-                    <!-- Legs -->
                     <rect class="pixel" x="74" y="82" width="4" height="8" fill="#2b1d0c"/>
                     <rect class="pixel" x="82" y="82" width="4" height="8" fill="#2b1d0c"/>
                 </g>
 
-                <!-- Happy Nakornban (Pass >= 7) -->
                 <g id="char-happy" class="hidden">
-                    <!-- Jump Offset Container -->
                     <g id="happy-jump">
                         <path class="pixel" d="M74,50 L86,50 L83,40 L77,40 Z" fill="#b8860b"/>
                         <rect class="pixel" x="72" y="50" width="16" height="3" fill="#8b0000"/>
                         <rect class="pixel" x="75" y="53" width="10" height="8" fill="#ffdbac"/>
-                        <!-- Happy Eyes ^ ^ -->
                         <path class="pixel" d="M77,55 L79,55 M81,55 L83,55" stroke="#000" stroke-width="1"/>
                         <rect class="pixel" x="78" y="58" width="4" height="2" fill="#ff6666"/>
-                        <!-- Body Arms Raised -->
                         <rect class="pixel" x="73" y="61" width="14" height="16" fill="#4a2c11"/>
                         <rect class="pixel" x="68" y="58" width="4" height="10" fill="#4a2c11"/>
                         <rect class="pixel" x="88" y="58" width="4" height="10" fill="#4a2c11"/>
-                        <!-- Legs Jump -->
                         <rect class="pixel" x="73" y="77" width="4" height="6" fill="#2b1d0c"/>
                         <rect class="pixel" x="83" y="77" width="4" height="6" fill="#2b1d0c"/>
                     </g>
-                    <!-- Fireworks & Stars -->
                     <g id="confetti">
                         <rect class="pixel" x="40" y="30" width="3" height="3" fill="#ff0"/>
                         <rect class="pixel" x="120" y="25" width="4" height="4" fill="#ff0055"/>
@@ -303,22 +251,15 @@
                     </g>
                 </g>
 
-                <!-- Angry / Slash Nakornban (Fail < 7) -->
                 <g id="char-angry" class="hidden">
-                    <!-- Red Aura -->
                     <rect class="pixel" x="65" y="45" width="30" height="45" fill="rgba(255,0,0,0.2)"/>
-                    <!-- Hat -->
                     <path class="pixel" d="M74,55 L86,55 L83,45 L77,45 Z" fill="#8b0000"/>
                     <rect class="pixel" x="75" y="58" width="10" height="8" fill="#ff8888"/>
-                    <!-- Angry Eyes \ / -->
                     <line x1="76" y1="60" x2="79" y2="63" stroke="#000" stroke-width="1"/>
                     <line x1="84" y1="60" x2="81" y2="63" stroke="#000" stroke-width="1"/>
-                    <!-- Body -->
                     <rect class="pixel" x="73" y="66" width="14" height="16" fill="#4a2c11"/>
-                    <!-- Sword Slashing Effect -->
-                    <path id="slash-effect" class="pixel" d="M40,40 L100,85" stroke="#ffffff" stroke-width="4" stroke-linecap="round"/>
+                    <path class="pixel" d="M40,40 L100,85" stroke="#ffffff" stroke-width="4" stroke-linecap="round"/>
                     <path class="pixel" d="M45,38 L105,83" stroke="#ff3333" stroke-width="2"/>
-                    <!-- Sword in Hand -->
                     <line x1="85" y1="70" x2="115" y2="50" stroke="#c0c0c0" stroke-width="3"/>
                 </g>
             </g>
@@ -327,28 +268,21 @@
         <div id="feedback-banner" class="feedback-banner hidden"></div>
     </div>
 
-    <!-- Content / Quiz Area -->
     <div class="content-area">
-        <div id="question-box" class="question-box">
-            กำลังโหลดคำถาม...
-        </div>
-        <div id="options-grid" class="options-grid">
-            <!-- Options will be generated here -->
-        </div>
+        <div id="question-box" class="question-box">กำลังโหลดคำถาม...</div>
+        <div id="options-grid" class="options-grid"></div>
     </div>
 
-    <!-- Start Overlay Screen -->
     <div id="start-screen" class="screen">
         <h2 style="color: #f3e5ab; margin-bottom: 5px;">📜 กฎหมายพระนครบาล 📜</h2>
         <p style="color: #ccc; font-size: 14px; line-height: 1.5; margin-bottom: 15px;">
             ยินดีต้อนรับสู่อโยธยา!<br>
-            แบบทดสอบกฎหมายและกฎเหล็กการใช้กุญแจมือ 10 ข้อ<br>
+            แบบทดสอบกฎหมายและระเบียบพระนคร 10 ข้อ<br>
             (เกณฑ์ผ่าน: 7 ข้อขึ้นไป)
         </p>
         <button id="start-btn" class="btn-start">⚔️ คลิกเพื่อเริ่ม (CLICK TO START) ⚔️</button>
     </div>
 
-    <!-- Result Overlay Screen -->
     <div id="result-screen" class="screen hidden">
         <h2 id="result-title" style="color: #f3e5ab; margin-bottom: 10px;">สรุปผลการทดสอบ</h2>
         <div id="result-score" style="font-size: 28px; font-weight: bold; color: #ffeb3b; margin: 10px 0;">0 / 10</div>
@@ -358,14 +292,11 @@
 </div>
 
 <script>
-    // Audio Synthesizer (Web Audio API)
     const AudioContext = window.AudioContext || window.webkitAudioContext;
     let audioCtx = null;
 
     function initAudio() {
-        if (!audioCtx) {
-            audioCtx = new AudioContext();
-        }
+        if (!audioCtx) audioCtx = new AudioContext();
     }
 
     function playSound(type) {
@@ -374,115 +305,93 @@
         const gain = audioCtx.createGain();
         osc.connect(gain);
         gain.connect(audioCtx.destination);
-
         const now = audioCtx.currentTime;
 
         if (type === 'click') {
-            osc.type = 'square';
-            osc.frequency.setValueAtTime(400, now);
-            gain.gain.setValueAtTime(0.1, now);
-            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
-            osc.start(now);
-            osc.stop(now + 0.05);
+            osc.type = 'square'; osc.frequency.setValueAtTime(400, now);
+            gain.gain.setValueAtTime(0.1, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
+            osc.start(now); osc.stop(now + 0.05);
         } else if (type === 'correct') {
-            osc.type = 'triangle';
-            osc.frequency.setValueAtTime(523.25, now); // C5
-            osc.frequency.setValueAtTime(659.25, now + 0.08); // E5
-            osc.frequency.setValueAtTime(783.99, now + 0.16); // G5
-            gain.gain.setValueAtTime(0.15, now);
-            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
-            osc.start(now);
-            osc.stop(now + 0.3);
+            osc.type = 'triangle'; osc.frequency.setValueAtTime(523.25, now);
+            osc.frequency.setValueAtTime(659.25, now + 0.08); osc.frequency.setValueAtTime(783.99, now + 0.16);
+            gain.gain.setValueAtTime(0.15, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+            osc.start(now); osc.stop(now + 0.3);
         } else if (type === 'wrong') {
-            osc.type = 'sawtooth';
-            osc.frequency.setValueAtTime(180, now);
-            osc.frequency.setValueAtTime(110, now + 0.1);
-            gain.gain.setValueAtTime(0.2, now);
-            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
-            osc.start(now);
-            osc.stop(now + 0.3);
+            osc.type = 'sawtooth'; osc.frequency.setValueAtTime(180, now);
+            osc.frequency.setValueAtTime(110, now + 0.1); gain.gain.setValueAtTime(0.2, now);
+            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3); osc.start(now); osc.stop(now + 0.3);
         } else if (type === 'slash') {
-            osc.type = 'sawtooth';
-            osc.frequency.setValueAtTime(800, now);
-            osc.frequency.exponentialRampToValueAtTime(40, now + 0.25);
-            gain.gain.setValueAtTime(0.3, now);
-            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
-            osc.start(now);
-            osc.stop(now + 0.25);
+            osc.type = 'sawtooth'; osc.frequency.setValueAtTime(800, now);
+            osc.frequency.exponentialRampToValueAtTime(40, now + 0.25); gain.gain.setValueAtTime(0.3, now);
+            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25); osc.start(now); osc.stop(now + 0.25);
         } else if (type === 'cheer') {
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(523.25, now);
-            osc.frequency.setValueAtTime(659.25, now + 0.1);
-            osc.frequency.setValueAtTime(783.99, now + 0.2);
-            osc.frequency.setValueAtTime(1046.50, now + 0.3);
-            gain.gain.setValueAtTime(0.2, now);
-            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.6);
-            osc.start(now);
-            osc.stop(now + 0.6);
+            osc.type = 'sine'; osc.frequency.setValueAtTime(523.25, now);
+            osc.frequency.setValueAtTime(659.25, now + 0.1); osc.frequency.setValueAtTime(783.99, now + 0.2);
+            osc.frequency.setValueAtTime(1046.50, now + 0.3); gain.gain.setValueAtTime(0.2, now);
+            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.6); osc.start(now); osc.stop(now + 0.6);
         }
     }
 
-    // 10 Question Bank based on provided images
     const rawQuestions = [
         {
-            q: "ตามกฎเหล็กการใช้กุญแจมือ ข้อ 1: การแต่งกายไม่ถูกต้องตามยุคและระเบียบ หากไม่ยอมเปลี่ยน สามารถจับกุมได้กี่วินาที?",
+            q: "การแต่งกายไม่ถูกต้องตามยุคและระเบียบ หากไม่ยอมเปลี่ยน สามารถจับกุมได้กี่วินาที?",
             options: ["60 วินาที", "120 วินาที", "300 วินาที", "600 วินาที"],
             answer: 1,
-            reason: "กฎเหล็กข้อ 1 ระบุให้ตักเตือนก่อน หากไม่ยอมเปลี่ยน จับกุมได้ 120 วินาที"
+            reason: "ให้ตักเตือนก่อน หากไม่ยอมเปลี่ยน จับกุมได้ 120 วินาที"
         },
         {
-            q: "ตามกฎเหล็กข้อ 2: ยิงปืนในพระนครโดยไม่มีผู้เสียชีวิต ให้จับกุมกี่วินาที?",
+            q: "การยิงปืนในพระนครโดยไม่มีผู้เสียชีวิต ให้จับกุมกี่วินาที?",
             options: ["120 วินาที", "300 วินาที", "600 วินาที", "1200 วินาที"],
             answer: 2,
-            reason: "กฎเหล็กข้อ 2 ยิงปืนในพระนครไม่มีผู้เสียชีวิต จับกุม 600 วินาที (หากทำผิดซ้ำซากเพิ่มเป็น 900 วิ)"
+            reason: "ยิงปืนในพระนครไม่มีผู้เสียชีวิต จับกุม 600 วินาที (ทำผิดซ้ำซากเพิ่มเป็น 900 วิ)"
         },
         {
-            q: "ตามกฎเหล็กข้อ 3: การฆ่ากันจนถึงแก่ความตาย ให้จับกุมเป็นเวลากี่วินาที?",
+            q: "การฆ่ากันจนถึงแก่ความตาย ให้จับกุมเป็นเวลากี่วินาที?",
             options: ["600 วินาที", "900 วินาที", "1200 - 1800 วินาที", "2400 วินาที"],
             answer: 2,
-            reason: "กฎเหล็กข้อ 3 ฆ่ากันถึงแก่ความตาย ให้จับกุม 1200-1800 วินาที โดยไม่ต้องตักเตือน"
+            reason: "ฆ่ากันถึงแก่ความตาย ให้จับกุม 1200-1800 วินาที โดยไม่ต้องตักเตือน"
         },
         {
-            q: "ตามกฎเหล็กข้อ 4: การจับกุมมากหรือน้อยกว่าที่กำหนดไว้ในกฎหมายถือเป็นอย่างไร?",
+            q: "การจับกุมมากหรือน้อยกว่าที่กำหนดไว้ในกฎหมายถือเป็นอย่างไร?",
             options: ["ถือเป็นความชอบธรรม", "ถือเป็นความผิด", "ทำได้หากผู้ร้ายขัดขืน", "ได้รับการละเว้น"],
             answer: 1,
-            reason: "กฎเหล็กข้อ 4 ระบุชัดเจนว่า การจับกุมมากหรือน้อยกว่าที่กำหนดถือเป็นความผิด"
+            reason: "การจับกุมมากหรือน้อยกว่าที่กำหนดถือเป็นความผิด"
         },
         {
-            q: "ตามกฎหมายพระนคร หมวด 3 มาตรา 5 โทษสำหรับขุนนาง โทษสูงสุดคือข้อใด?",
-            options: ["จำคุก 1000 วิ", "ริบทรัพย์", "ประหารชีวิต", "ปลดจ่า / ลงบรบรรดาศักดิ์ / จำคุก / ปรับ"],
+            q: "กรณีขุนนางกระทำความผิด โทษสูงสุดหรือการดำเนินการคือข้อใด?",
+            options: ["จำคุก 1000 วิ", "ริบทรัพย์", "ประหารชีวิต", "ปลดจ่า / ลงบรรดาศักดิ์ / จำคุก / ปรับ"],
             answer: 3,
-            reason: "มาตรา 5 ระบุโทษสำหรับขุนนางคือ ปลดจ่า / ลงบรบรรดาศักดิ์ / จำคุก / ปรับ"
+            reason: "กำหนดโทษสำหรับขุนนางคือ ปลดจ่า / ลงบรรดาศักดิ์ / จำคุก / ปรับ"
         },
         {
-            q: "ตามกฎหมายพระนคร หมวด 4 มาตรา 16 การฆ่าผู้อื่น มีโทษอย่างไร?",
+            q: "การทำผิดฐานฆ่าผู้อื่น มีโทษอย่างไร?",
             options: ["จำคุก 600 วิ", "จำคุก 1050 วิ / ปรับ 5000 พดด้วง", "จำคุก 1500 วิ", "ประหารชีวิต"],
             answer: 1,
-            reason: "มาตรา 16 กำหนดโทษฆ่าผู้อื่น: จำคุก 1050 วิ / ปรับ 5000 พดด้วง"
+            reason: "กำหนดโทษฆ่าผู้อื่น: จำคุก 1050 วิ / ปรับ 5000 พดด้วง"
         },
         {
-            q: "ตามมาตรา 24 การขโมยม้าลำปางรอง มีโทษจำคุกกี่วินาที?",
+            q: "การขโมยม้าลำปางรอง มีโทษจำคุกกี่วินาที?",
             options: ["300 วิ", "500 วิ", "750 วิ", "1800 วิ"],
             answer: 1,
             reason: "ขโมยม้าลำปางรอง มีโทษจำคุก 500 วิ"
         },
         {
-            q: "ตามมาตรา 37 การกระทำตั้งแต่ 5 คนขึ้นไปร่วมกระทำความผิด เรียกว่าอะไร?",
+            q: "การกระทำตั้งแต่ 5 คนขึ้นไปร่วมกระทำความผิด เรียกว่าอะไร?",
             options: ["ซ่องโจร", "ขบถพระนคร", "วางเพลิง", "ก่อสุมรุมสเกล"],
             answer: 0,
             reason: "การร่วมกระทำผิดตั้งแต่ 5 คนขึ้นไป เรียกว่า 'ซ่องโจร' (จำคุก 1200 วิ)"
         },
         {
-            q: "ตามมาตรา 21 การป้องกันตัวเกินกว่าเหตุ มีโทษจำคุกกี่วินาที?",
-            options: ["120 วิ", "350 วิ", "500 วิ", "750 วิ"],
+            q: "การป้องกันตัวเกินกว่าเหตุ มีโทษอย่างไร?",
+            options: ["จำคุก 120 วิ", "จำคุก 350 วิ", "จำคุก 500 วิ", "จำคุก 750 วิ"],
             answer: 1,
-            reason: "มาตรา 21 ป้องกันตัวเกินกว่าเหตุ จำคุก 350 วิ"
+            reason: "ป้องกันตัวเกินกว่าเหตุ มีโทษจำคุก 350 วิ"
         },
         {
-            q: "ตามมาตรา 67 ขุนนางกระทำความผิด จะได้รับโทษอย่างไรเทียบกับราษฎร?",
+            q: "ขุนนางกระทำความผิด มีโทษอย่างไรเทียบกับคนทั่วไป?",
             options: ["โทษเท่ากัน", "รับโทษ 2 เท่า", "ลดโทษกึ่งหนึ่ง", "ไม่ต้องรับโทษ"],
             answer: 1,
-            reason: "หมวด 7 มาตรา 67 ระบุ ขุนนางกระทำความผิด รับโทษเป็น 2 เท่า"
+            reason: "ขุนนางกระทำความผิด รับโทษเป็น 2 เท่า"
         }
     ];
 
@@ -490,7 +399,6 @@
     let currentQuestionIndex = 0;
     let score = 0;
 
-    // Fisher-Yates Shuffle Algorithm for randomizing questions
     function shuffleArray(array) {
         const arr = [...array];
         for (let i = arr.length - 1; i > 0; i--) {
@@ -500,7 +408,6 @@
         return arr;
     }
 
-    // DOM Elements
     const startScreen = document.getElementById('start-screen');
     const resultScreen = document.getElementById('result-screen');
     const startBtn = document.getElementById('start-btn');
@@ -515,7 +422,6 @@
     const charHappy = document.getElementById('char-happy');
     const charAngry = document.getElementById('char-angry');
 
-    // Event Listeners for Start Buttons
     function handleStart() {
         initAudio();
         playSound('click');
@@ -523,19 +429,11 @@
     }
 
     startBtn.addEventListener('click', handleStart);
-    startBtn.addEventListener('touchstart', (e) => {
-        e.preventDefault();
-        handleStart();
-    });
-
+    startBtn.addEventListener('touchstart', (e) => { e.preventDefault(); handleStart(); });
     restartBtn.addEventListener('click', handleStart);
-    restartBtn.addEventListener('touchstart', (e) => {
-        e.preventDefault();
-        handleStart();
-    });
+    restartBtn.addEventListener('touchstart', (e) => { e.preventDefault(); handleStart(); });
 
     function startGame() {
-        // Shuffle questions every time game starts
         questions = shuffleArray(rawQuestions);
         currentQuestionIndex = 0;
         score = 0;
@@ -579,7 +477,6 @@
         const q = questions[currentQuestionIndex];
         const buttons = optionsGrid.children;
 
-        // Disable all buttons after choice
         for (let btn of buttons) {
             btn.style.pointerEvents = 'none';
         }
@@ -613,8 +510,6 @@
         feedbackBanner.innerText = isCorrect ? "✨ ถูกต้อง!" : "❌ ผิด!";
         feedbackBanner.className = `feedback-banner ${isCorrect ? 'feedback-correct' : 'feedback-wrong'}`;
         feedbackBanner.classList.remove('hidden');
-
-        // Render explanation in question box temporarily
         questionBox.innerText = text;
     }
 
@@ -628,14 +523,12 @@
         charNormal.classList.add('hidden');
         
         if (passed) {
-            // Happy Animation
             charHappy.classList.remove('hidden');
             playSound('cheer');
             document.getElementById('result-title').innerText = "🎉 ผ่านการทดสอบ! 🎉";
             document.getElementById('result-title').style.color = "#55ff55";
             document.getElementById('result-desc').innerText = "ยินดีด้วย! ท่านมีความเชี่ยวชาญกฎหมายพระนครบาล เหมาะสมแก่การรับราชการรักษาความสงบ!";
         } else {
-            // Angry Slashing Animation
             charAngry.classList.remove('hidden');
             playSound('slash');
             document.getElementById('result-title').innerText = "⚔️ ไม่ผ่านการทดสอบ! ⚔️";
