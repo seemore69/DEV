@@ -163,6 +163,21 @@
         .feedback-correct { background: #16845b; color: #fff; border-color: #a8e6ca; }
         .feedback-wrong { background: #c74652; color: #fff; border-color: #ffc4c8; }
 
+        /* แอนิเมชันต่อสู้ขยับตัวละคร */
+        @keyframes slashAnim {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            30% { transform: translate(15px, -5px) rotate(15deg); }
+            60% { transform: translate(-10px, 0) rotate(-10deg); }
+            100% { transform: translate(0, 0) rotate(0deg); }
+        }
+        @keyframes enemyHit {
+            0% { transform: translate(0, 0); opacity: 1; }
+            50% { transform: translate(-15px, 0) scale(0.9); fill: #c74652; }
+            100% { transform: translate(0, 0); opacity: 1; }
+        }
+        .anim-attack { animation: slashAnim 0.4s ease; }
+        .anim-hit { animation: enemyHit 0.4s ease; }
+
         @media (max-width: 860px) {
             .main-layout { flex-direction: column; align-items: center; }
             .rank-sidebar { width: 100%; max-width: 520px; }
@@ -185,6 +200,7 @@
             <span id="score-text">SCORE: 00</span>
         </div>
 
+        <!-- ฉากต่อสู้ระหว่างทำข้อสอบ -->
         <div class="stage-view">
             <svg id="pixel-canvas" viewBox="0 0 160 140" xmlns="http://www.w3.org/2000/svg">
                 <rect x="0" y="0" width="160" height="90" fill="#030712"/>
@@ -194,21 +210,20 @@
                 <rect x="0" y="90" width="160" height="6" fill="#0284c7"/>
                 <rect x="0" y="96" width="160" height="44" fill="#090d16"/>
                 
-                <g id="character-group">
-                    <g id="char-normal">
-                        <rect x="73" y="56" width="14" height="10" fill="#ffdbac"/>
-                        <rect x="71" y="66" width="18" height="16" fill="#0f172a"/>
-                        <rect x="76" y="66" width="8" height="16" fill="#0284c7"/>
-                    </g>
-                    <g id="char-happy" class="hidden">
-                        <rect x="73" y="51" width="14" height="10" fill="#ffdbac"/>
-                        <rect x="71" y="61" width="18" height="16" fill="#0f172a"/>
-                    </g>
-                    <g id="char-angry" class="hidden">
-                        <rect x="73" y="56" width="14" height="10" fill="#fca5a5"/>
-                        <rect x="71" y="66" width="18" height="16" fill="#0f172a"/>
-                        <path d="M40,35 L120,88" stroke="#ffffff" stroke-width="2"/>
-                    </g>
+                <!-- ตัวละครฝั่งผู้เล่น (ซ้าย) -->
+                <g id="player-fighter" transform="translate(40, 35)">
+                    <rect x="10" y="21" width="14" height="10" fill="#ffdbac"/>
+                    <rect x="8" y="31" width="18" height="16" fill="#0f172a"/>
+                    <rect x="13" y="31" width="8" height="16" fill="#1769aa"/>
+                    <!-- ดาบประจำตัว -->
+                    <path id="player-sword" d="M26,30 L45,15" stroke="#cbd5e1" stroke-width="2.5" stroke-linecap="round"/>
+                </g>
+
+                <!-- ตัวละครฝั่งคู่ปรับ / ผู้กระทำผิด (ขวา) -->
+                <g id="enemy-fighter" transform="translate(100, 35)">
+                    <rect x="10" y="21" width="14" height="10" fill="#fca5a5"/>
+                    <rect x="8" y="31" width="18" height="16" fill="#7f1d1d"/>
+                    <path d="M5,32 L-10,25" stroke="#f87171" stroke-width="2" stroke-linecap="round"/>
                 </g>
             </svg>
             <div id="feedback-banner" class="feedback-banner hidden"></div>
@@ -246,7 +261,7 @@
         </div>
     </div>
 
-    <!-- หน้าต่างแสดง RANK คะแนนสูงสุด (Sidebar ขวา) -->
+    <!-- หน้าต่างแสดง RANK -->
     <div class="rank-sidebar">
         <h3>🏆 ทำเนียบอันดับ (High Score)</h3>
         <div id="rank-list" class="rank-list">
@@ -336,9 +351,8 @@
     const scoreText = document.getElementById('score-text');
     const feedbackBanner = document.getElementById('feedback-banner');
 
-    const charNormal = document.getElementById('char-normal');
-    const charHappy = document.getElementById('char-happy');
-    const charAngry = document.getElementById('char-angry');
+    const playerFighter = document.getElementById('player-fighter');
+    const enemyFighter = document.getElementById('enemy-fighter');
 
     function loadLocalRankSidebar() {
         const rankList = document.getElementById('rank-list');
@@ -393,7 +407,6 @@
         
         currentQuestionIndex = 0;
         score = 0;
-        resetCharState();
         updateHeader();
         loadQuestion();
     }
@@ -405,12 +418,6 @@
         resultScreen.classList.add('hidden');
         startScreen.classList.remove('hidden');
     });
-
-    function resetCharState() {
-        charNormal.classList.remove('hidden');
-        charHappy.classList.add('hidden');
-        charAngry.classList.add('hidden');
-    }
 
     function updateHeader() {
         progressText.innerText = `ข้อที่: ${String(currentQuestionIndex + 1).padStart(2, '0')}/${questions.length}`;
@@ -440,6 +447,15 @@
         for (let btn of buttons) {
             btn.style.pointerEvents = 'none';
         }
+
+        // Trigger แอนิเมชันต่อสู้ระหว่างตอบ
+        playerFighter.classList.add('anim-attack');
+        setTimeout(() => enemyFighter.classList.add('anim-hit'), 150);
+
+        setTimeout(() => {
+            playerFighter.classList.remove('anim-attack');
+            enemyFighter.classList.remove('anim-hit');
+        }, 400);
 
         if (selectedIndex === q.answer) {
             score++;
@@ -479,17 +495,13 @@
 
     function endGame() {
         const passed = score >= 14;
-
-        charNormal.classList.add('hidden');
         
         if (passed) {
-            charHappy.classList.remove('hidden');
             playSound('cheer');
             document.getElementById('result-title').innerText = "🎉 ผ่านการทดสอบ! 🎉";
             document.getElementById('result-title').style.color = "#16845b";
             document.getElementById('result-desc').innerText = `ยอดเยี่ยม! คุณ ${playerName} (${playerRank}) ทำได้ผ่านเกณฑ์ 14 ข้อขึ้นไป เหมาะสมแก่การรักษาความสงบ!`;
         } else {
-            charAngry.classList.remove('hidden');
             playSound('slash');
             document.getElementById('result-title').innerText = "⚔️ ไม่ผ่านการทดสอบ! ⚔️";
             document.getElementById('result-title').style.color = "#c74652";
