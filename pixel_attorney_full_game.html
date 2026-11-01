@@ -1,10 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="th">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pixel Attorney - Real Viral Cases Edition (Lv.1-100)</title>
+    <title>Pixel Attorney - Civil, Criminal & Administrative Edition (100 Cases)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @keyframes idle {
@@ -36,11 +35,10 @@
     <div id="character-creation-screen" class="w-full max-w-2xl bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-2xl flex flex-col gap-6 my-auto">
         <div class="text-center border-b border-slate-800 pb-4">
             <h1 class="text-2xl md:text-3xl font-black text-sky-400 tracking-wide">⚖️ สร้างทนายความของคุณ</h1>
-            <p class="text-xs text-slate-400 mt-1">ปรับแต่งรูปลักษณ์ เลือกสายอาชีพ และตั้งชื่อก่อนเข้าสู่ชั้นศาลคดีดัง</p>
+            <p class="text-xs text-slate-400 mt-1">ปรับแต่งรูปลักษณ์ เลือกสายอาชีพ และตั้งชื่อก่อนเข้าสู่ชั้นศาล (แพ่ง อาญา ปกครอง)</p>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
-            <!-- Character Preview Card -->
             <div class="bg-slate-950 border border-slate-800 rounded-xl p-6 flex flex-col items-center justify-center gap-3 relative shadow-inner">
                 <span class="text-[10px] text-sky-400 font-bold bg-slate-900 border border-sky-500/30 px-2 py-0.5 rounded-full" id="preview-class-badge">สายทนายความ</span>
                 <div id="character-avatar-preview" class="w-28 h-32 rounded-2xl flex items-center justify-center text-6xl shadow-xl transition-all duration-300 anim-idle border-2">
@@ -52,7 +50,6 @@
                 </div>
             </div>
 
-            <!-- Customization Controls -->
             <div class="flex flex-col gap-4">
                 <div>
                     <label class="text-xs font-bold text-slate-300 mb-1 block">ชื่อทนายความ:</label>
@@ -129,12 +126,12 @@
 
             <div class="flex justify-between items-center z-10 px-4">
                 <div class="flex flex-col items-center">
-                    <div class="text-[10px] text-rose-400 bg-slate-900/80 px-2 py-0.5 rounded border border-rose-500/30 mb-1">อัยการโจทก์</div>
+                    <div class="text-[10px] text-rose-400 bg-slate-900/80 px-2 py-0.5 rounded border border-rose-500/30 mb-1">คู่ความฝั่งตรงข้าม</div>
                     <div id="prosecutor-sprite" class="w-20 h-24 bg-rose-950/40 border border-rose-500/20 rounded-xl flex items-center justify-center text-3xl shadow-lg anim-idle">🏛️</div>
                 </div>
 
                 <div class="flex flex-col items-center">
-                    <div id="witness-role" class="text-[10px] text-amber-400 bg-slate-900/80 px-2 py-0.5 rounded border border-amber-500/30 mb-1">พยานปากเอก</div>
+                    <div id="witness-role" class="text-[10px] text-amber-400 bg-slate-900/80 px-2 py-0.5 rounded border border-amber-500/30 mb-1">พยาน/เจ้าหน้าที่</div>
                     <div id="witness-sprite" class="w-24 h-28 bg-amber-950/30 border border-amber-500/20 rounded-xl flex items-center justify-center text-4xl shadow-lg anim-idle">🧑‍💼</div>
                 </div>
 
@@ -145,7 +142,7 @@
             </div>
 
             <div class="absolute top-3 left-3 z-20 bg-slate-900/90 border border-slate-700 px-3 py-1 rounded-lg text-xs font-semibold text-sky-300 shadow flex items-center gap-2">
-                <span>คดีที่ <span id="current-case-num">1</span>: <span id="current-case-title">กำลังโหลด...</span></span>
+                <span>คดีที่ <span id="current-case-num">1</span>/100: <span id="current-case-title">กำลังโหลด...</span></span>
             </div>
 
             <button onclick="backToCustomization()" class="absolute top-3 right-3 z-20 bg-slate-800/80 hover:bg-slate-700 text-slate-300 px-2.5 py-1 rounded-lg text-[11px] border border-slate-700 transition">
@@ -156,8 +153,8 @@
         <!-- Dialogue Box -->
         <div class="w-full bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-xl flex flex-col gap-2 min-h-[100px] justify-center relative">
             <div class="flex items-center justify-between">
-                <span id="speaker-name" class="text-xs font-bold text-amber-400 uppercase tracking-wider">พยานปากเอก (โจทก์)</span>
-                <span class="text-[10px] text-slate-500">Endless Viral Cases (Lv. 1-100)</span>
+                <span id="speaker-name" class="text-xs font-bold text-amber-400 uppercase tracking-wider">คู่ความ / พยาน</span>
+                <span class="text-[10px] text-slate-500">100 Cases (Civil, Criminal & Administrative)</span>
             </div>
             <p id="dialogue-text" class="text-sm md:text-base text-slate-200 leading-relaxed">กำลังเตรียมสำนวนคดีในชั้นศาล...</p>
         </div>
@@ -214,9 +211,7 @@
                 <div id="modal-icon" class="text-3xl">🎉</div>
                 <h2 id="modal-title" class="text-base font-bold text-white">หัวข้อแจ้งเตือน</h2>
             </div>
-            <div id="modal-desc" class="text-xs md:text-sm text-slate-300 leading-relaxed space-y-2">
-                <!-- Detailed content populated via JS -->
-            </div>
+            <div id="modal-desc" class="text-xs md:text-sm text-slate-300 leading-relaxed space-y-2"></div>
             <div class="flex gap-2 justify-end pt-2 border-t border-slate-800">
                 <button id="modal-btn" onclick="closeModal()" class="bg-sky-600 hover:bg-sky-500 text-white font-bold text-xs px-5 py-2.5 rounded-xl transition shadow">ตกลง</button>
             </div>
@@ -303,92 +298,164 @@
             ]
         };
 
+        // ฐานข้อมูล 100 คดี (ผสมผสาน แพ่ง, อาญา และ ปกครอง)
         const caseTemplates = [
+            // --- คดีแพ่ง ---
             {
+                type: "แพ่ง",
                 title: "คดีดราม่าปังชาและเครื่องหมายการค้า",
-                disclaimer: "*(หมายเหตุ: คดีนี้ดัดแปลงจากข่าวข้อพิพาทเครื่องหมายการค้าบนโลกออนไลน์ เพื่อความบันเทิงและเสริมความรู้ทางกฎหมายเท่านั้น)*",
-                background: "โจทก์ยื่นฟ้องร้านค้าและเรียกร้องค่าเสียหายหลายล้านบาท โดยอ้างสิทธิการผูกขาดคำว่า 'ปังชา' บนชื่อเมนูและป้ายร้านค้า",
-                cause: "ความเข้าใจคลาดเคลื่อนเรื่องขอบเขตการคุ้มครองเครื่องหมายการค้าคำสามัญที่ใช้เรียกชื่อสินค้าทั่วไป",
-                summary: "ศาลพิพากษายยกฟ้องเนื่องจากคำว่า 'ปังชา' เป็นคำสามัญที่ใช้เรียกขนมปังราดชาไทย ซึ่งบุคคลทั่วไปสามารถใช้ประกอบการค้าได้ ไม่สามารถผูกขาดเป็นเจ้าของสิทธิแต่เพียงผู้เดียวตาม พ.ร.บ.เครื่องหมายการค้า ม.7",
-                witness: "โจทก์อ้างว่าจำเลยเปิดร้านขายขนมปังชาไทย แล้วใช้คำว่า 'ปังชา' ในชื่อร้าน ถือเป็นการละเมิดเครื่องหมายการค้าและเรียกค่าเสียหายหลายล้านบาท!",
-                testimony: "ฉันเป็นเจ้าของสิทธิในคำว่า 'ปังชา' ค่ะ! ร้านจำเลยบังอาจใช้คำว่า 'ปังชา' บนป้ายร้านและเมนู เป็นการละเมิดสิทธิเครื่องหมายการค้าของฉันอย่างชัดเจน!",
+                disclaimer: "*(หมายเหตุ: คดีแพ่ง ข้อพิพาทสิทธิเครื่องหมายการค้าคำสามัญ)*",
+                background: "โจทก์ฟ้องร้องเรียกค่าเสียหายจากการใช้ชื่อเมนูและป้ายร้านค้า",
+                cause: "ความเข้าใจคลาดเคลื่อนเรื่องขอบเขตการคุ้มครองเครื่องหมายการค้าคำสามัญ",
+                summary: "ศาลพิพากษายกฟ้องเพราะ 'ปังชา' เป็นคำสามัญที่ใครก็ใช้ได้ ตาม พ.ร.บ.เครื่องหมายการค้า ม.7",
+                witness: "โจทก์อ้างว่าจำเลยเปิดร้านขายขนมปังแล้วใช้คำว่า 'ปังชา' ละเมิดสิทธิของตน!",
+                testimony: "ฉันจดสิทธิในคำว่า 'ปังชา' ร้านจำเลยบังอาจใช้ชื่อนี้บนป้ายร้าน ต้องชดใช้ค่าเสียหาย!",
                 evidences: [
-                    { id: 'e1', text: 'รูปถ่ายป้ายร้านจำเลยที่มีคำว่า ปังชา' },
-                    { id: 'e2', text: 'หนังสือคำวินิจฉัยกรมทรัพย์สินทางปัญญาว่า คำว่า ปังชา เป็นคำสามัญที่ใครๆ ก็ใช้ได้' },
-                    { id: 'e3', text: 'ใบเสร็จค่าใช้จ่ายการทำการตลาดของโจทก์' }
+                    { id: 'e1', text: 'รูปถ่ายป้ายร้านจำเลย' },
+                    { id: 'e2', text: 'หนังสือวินิจฉัยกรมทรัพย์สินทางปัญญาว่า คำว่า ปังชา เป็นคำสามัญใช้ทั่วไปได้' },
+                    { id: 'e3', text: 'ใบเสร็จการตลาดของโจทก์' }
                 ],
                 correctEvidence: 'e2',
                 laws: [
-                    { id: 'l1', name: 'พ.ร.บ.เครื่องหมายการค้า ม.7 (คำสามัญ/อธิบายลักษณะสินค้า ไม่รับจดทะเบียนและห้ามผูกขาด)', correct: true },
-                    { id: 'l2', name: 'ป.อ. ม.334 (ฐานลักทรัพย์)', correct: false },
-                    { id: 'l3', name: 'ป.อ. ม.341 (ฐานฉ้อโกง)', correct: false },
-                    { id: 'l4', name: 'ป.พ.พ. ม.420 (เรื่องละเมิดทั่วไป)', correct: false }
+                    { id: 'l1', name: 'พ.ร.บ.เครื่องหมายการค้า ม.7 (คำสามัญ ห้ามผูกขาด)', correct: true },
+                    { id: 'l2', name: 'ป.อ. ม.334 (ลักทรัพย์)', correct: false },
+                    { id: 'l3', name: 'ป.อ. ม.341 (ฉ้อโกง)', correct: false },
+                    { id: 'l4', name: 'ป.พ.พ. ม.420 (ละเมิดทั่วไป)', correct: false }
                 ]
             },
             {
-                title: "คดีเพจดังโพสต์รีวิวเตือนภัยร้านอาหาร",
-                disclaimer: "*(หมายเหตุ: คดีนี้ดัดแปลงจากประเด็นข้อพิพาทอินฟลูเอนเซอร์รีวิวร้านอาหารบนโลกออนไลน์)*",
-                background: "ร้านอาหารแห่งหนึ่งฟ้องร้องอินฟลูเอนเซอร์ชื่อดังฐานหมิ่นประมาท ทำให้ยอดขายตกต่ำ หลังโพสต์รีวิวตำหนิเรื่องวัตถุดิบอาหาร",
-                cause: "การแสดงความคิดเห็นหรือติชมสินค้าและบริการตามความเป็นจริง เพื่อคุ้มครองผู้บริโภคในที่สาธารณะ",
-                summary: "การวิพากษ์วิจารณ์ร้านอาหารโดยมีหลักฐานการเข้าใช้บริการจริงและผลตรวจสุขอนามัย ถือเป็นการติชมด้วยความเป็นธรรมอันเป็นวิสัยของประชาชนผู้สุจริต ตาม ป.อ. ม.329 (3) จึงไม่มีความผิดฐานหมิ่นประมาท",
-                witness: "โจทก์อ้างว่าจำเลยเป็นอินฟลูเอนเซอร์ โพสต์รีวิวลงโซเชียลว่าร้านของโจทก์ใช้วัตถุดิบไม่สด ทำให้ร้านเสียชื่อเสียง ขู่ฟ้องหมิ่นประมาท!",
-                testimony: "จำเลยโพสต์ภาพอาหารร้านฉันลงอินเทอร์เน็ต แล้วพิมพ์ว่า 'หมูหมักมีกลิ่นแปลกๆ อย่าหามากิน' ทำให้ยอดขายฉันตกวูบ นี่คือการหมิ่นประมาทใส่ร้ายร้านฉันค่ะ!",
+                type: "แพ่ง",
+                title: "คดีลิขสิทธิ์มีมแมวไวรัลระดับโลก",
+                disclaimer: "*(หมายเหตุ: คดีแพ่ง ละเมิดลิขสิทธิ์ภาพถ่ายเชิงพาณิชย์)*",
+                background: "ช่างภาพฟ้องบริษัทเกมนำภาพถ่ายมีมแมวไปทำสติกเกอร์ขายในเกมโดยไม่ได้รับอนุญาต",
+                cause: "การนำภาพถ่ายดิจิทัลของผู้อื่นไปใช้หารายได้เชิงพาณิชย์โดยไม่ขออนุญาต",
+                summary: "ถือเป็นการละเมิดลิขสิทธิ์ภาพถ่าย ตาม พ.ร.บ.ลิขสิทธิ์ พ.ศ. 2535 จำเลยต้องชดใช้ค่าเสียหาย",
+                witness: "โจทก์อ้างว่าบริษัทเกมนำรูปแมวของผมไปขายเป็นไอเทมในเกมแพ็คละหลายร้อยบาท!",
+                testimony: "รูปแมวหน้าบึ้งตัวนี้ผมเป็นคนถ่ายและจดลิขสิทธิ์ แต่บริษัทเอาไปขายในเกมไม่แบ่งเงินเลย!",
                 evidences: [
-                    { id: 'e1', text: 'ยอดขายที่ลดลงของร้านโจทก์' },
-                    { id: 'e2', text: 'ผลตรวจแล็บสุขอนามัยและสลิปการจ่ายเงินเข้าบริการจริงของผู้บริโภค' },
-                    { id: 'e3', text: 'จำนวนยอดไลก์และยอดแชร์บนโพสต์' }
-                ],
-                correctEvidence: 'e2',
-                laws: [
-                    { id: 'l1', name: 'ป.อ. ม.329 (3) (การติชมด้วยความเป็นธรรม อันเป็นวิสัยของประชาชนย่อมกระทำ - ไม่เป็นความผิดหมิ่นประมาท)', correct: true },
-                    { id: 'l2', name: 'ป.อ. ม.328 (หมิ่นประมาทด้วยการโฆษณา)', correct: false },
-                    { id: 'l3', name: 'พ.ร.บ.คอมพิวเตอร์ ม.14 (1) (นำเข้าข้อมูลเท็จ)', correct: false },
-                    { id: 'l4', name: 'ป.อ. ม.334 (ฐานลักทรัพย์)', correct: false }
-                ]
-            },
-            {
-                title: "คดีไลฟ์สดขายทองคำเปอร์เซ็นต์ต่ำ",
-                disclaimer: "*(หมายเหตุ: คดีนี้ดัดแปลงจากข่าวดราม่าแม่ค้าไลฟ์สดขายทองคำออนไลน์ที่เป็นกระแสไวรัล)*",
-                background: "ผู้เสียหายซื้อทองคำจากไลฟ์สดออนไลน์ที่โฆษณาว่าเป็นทองคำแท้เปอร์เซ็นต์สูง แต่ผลตรวจสอบพบว่ามีส่วนผสมของทองคำจริงต่ำกว่ามาตรฐานที่โฆษณาอย่างมาก",
-                cause: "การโฆษณาข้อความอันเป็นเท็จหลอกลวงผู้บริโภคในวงกว้างผ่านสื่อสังคมออนไลน์เพื่อแสวงหาประโยชน์",
-                summary: "การแสดงข้อความอันเป็นเท็จต่อประชาชนในการจำหน่ายสินค้าผ่านไลฟ์สด เพื่อจูงใจให้ผู้บริโภคหลงเชื่อซื้อสินค้า เข้าข่ายความผิดฐานฉ้อโกงประชาชน ตาม ป.อ. ม.343",
-                witness: "ผู้เสียหายอ้างว่าร้านค้าออนไลน์ไลฟ์สดขายทองคำโดยบอกว่าเป็นทองแท้ 99.99% แต่เมื่อนำไปขายคืนร้านทองอื่น กลับได้ราคาต่ำมากเพราะเปอร์เซ็นต์ทองจริงต่ำกว่าอ้าง",
-                testimony: "ในไลฟ์สดแม่ค้าตะโกนบอกตลอดเลยค่ะว่าเป็นทองแท้ 99.99% ลดราคาพิเศษ! แต่พอฉันนำไปให้ร้านทองใหญ่ตรวจ กลับพบว่ามีทองแท้ผสมอยู่แค่ไม่กี่เปอร์เซ็นต์เองค่ะ!",
-                evidences: [
-                    { id: 'e1', text: 'คลิปวิดีโอบันทึกการไลฟ์สดขณะแม่ค้าโฆษณาเกินจริงว่าเป็นทองแท้ 99.99%' },
-                    { id: 'e2', text: 'กล่องพัสดุและโบว์ผูกของแถม' },
-                    { id: 'e3', text: 'ใบรับประกันสินค้าของทางร้านจำเลย' }
+                    { id: 'e1', text: 'ไฟล์ต้นฉบับภาพถ่ายพร้อมใบรับแจ้งลิขสิทธิ์ของโจทก์' },
+                    { id: 'e2', text: 'ภาพสกรีนช็อตหน้าจอร้านค้าในเกม' },
+                    { id: 'e3', text: 'แชตพูดคุยเล่นๆ บนโซเชียล' }
                 ],
                 correctEvidence: 'e1',
                 laws: [
-                    { id: 'l1', name: 'ป.อ. ม.343 (ฉ้อโกงประชาชน โฆษณาข้อความอันเป็นเท็จต่อประชาชน)', correct: true },
-                    { id: 'l2', name: 'ป.อ. ม.334 (ฐานลักทรัพย์)', correct: false },
+                    { id: 'l1', name: 'พ.ร.บ.ลิขสิทธิ์ พ.ศ. 2535 ม.27 และ 69 (ละเมิดลิขสิทธิ์เพื่อการค้า)', correct: true },
+                    { id: 'l2', name: 'ป.อ. ม.334 (ลักทรัพย์)', correct: false },
                     { id: 'l3', name: 'ป.อ. ม.358 (ทำให้เสียทรัพย์)', correct: false },
-                    { id: 'l4', name: 'ป.อ. ม.339 (ฐานวิ่งราวทรัพย์)', correct: false }
+                    { id: 'l4', name: 'พ.ร.บ.คอมพิวเตอร์ ม.14', correct: false }
                 ]
             },
+
+            // --- คดีอาญา ---
             {
-                title: "คดีแอบอ้างสแกนหน้าโอนเงินแอปธนาคาร",
-                disclaimer: "*(หมายเหตุ: คดีนี้ดัดแปลงจากข่าวอาชญากรรมทางเทคโนโลยีเกี่ยวกับการลักลอบเข้าถึงบัญชีธนาคาร)*",
-                background: "ผู้เสียหายตื่นมาพบว่าเงินในบัญชีถูกโอนออกไปในยามวิกาล สืบสวนพบว่าคนใกล้ตัวฉวยโอกาสตอนหลับนำโทรศัพท์มาสแกนใบหน้าผ่านระบบไบโอเมตริกซ์ของแอปธนาคาร",
-                cause: "การทุจริตลักลอบเข้าถึงระบบคอมพิวเตอร์และข้อมูลทางการเงินโดยมิชอบเพื่อยักย้ายทรัพย์สิน",
-                summary: "การลักลอบใช้เครื่องมือทางเทคโนโลยีและข้อมูลชีวภาพของผู้อื่นโดยไม่ได้รับอนุญาตเพื่อโอนเงิน ถือเป็นความผิดฐานเข้าถึงระบบคอมพิวเตอร์โดยมิชอบ ตาม พ.ร.บ.คอมพิวเตอร์ ม.7 และความผิดฐานลักทรัพย์ในเวลากลางคืน ตาม ป.อ. ม.335 (7)",
-                witness: "โจทก์อ้างว่าจำเลยแอบนำโทรศัพท์มือถือขณะโจทก์นอนหลับ ไปสแกนใบหน้าหลอกระบบเพื่อโอนเงินออกจากบัญชี",
-                testimony: "ตอนฉันหลับสนิท จำเลยแอบหยิบโทรศัพท์ของฉันไปยกจ่อหน้าฉันเพื่อสแกนใบหน้าผ่านแอปธนาคาร แล้วโอนเงินออกไปเข้าบัญชีตัวเอง 50,000 บาทครับ!",
+                type: "อาญา",
+                title: "คดีไลฟ์สดขายทองคำเปอร์เซ็นต์ต่ำ",
+                disclaimer: "*(หมายเหตุ: คดีอาญา ฐานฉ้อโกงประชาชนและโฆษณาเท็จ)*",
+                background: "ผู้เสียหายซื้อทองจากไลฟ์สดอ้างทองแท้ 99.99% แต่ตรวจจริงมีเปอร์เซ็นต์ต่ำมาก",
+                cause: "การโฆษณาข้อความอันเป็นเท็จหลอกลวงประชาชนผ่านสื่อออนไลน์",
+                summary: "เข้าข่ายความผิดฐานฉ้อโกงประชาชน ตาม ป.อ. ม.343",
+                witness: "ผู้เสียหายอ้างว่าแม่ค้าไลฟ์สดขายทองแท้แต่พอเอาไปขายคืนร้านอื่นกลับได้ราคาต่ำมาก",
+                testimony: "ในไลฟ์แม่ค้าตะโกนบอกว่าเป็นทองแท้ 99.99% แต่พอเอาไปตรวจที่ร้านใหญ่มีทองผสมนิดเดียวเอง!",
                 evidences: [
-                    { id: 'e1', text: 'สลิปการโอนเงินช่วงเวลาตี 3 และประวัติการสแกนใบหน้าสำเร็จในเครื่องจำเลย' },
-                    { id: 'e2', text: 'ซองใส่โทรศัพท์มือถือ' },
-                    { id: 'e3', text: 'แชตพูดคุยยืมเงินในอดีต' }
+                    { id: 'e1', text: 'คลิปวิดีโอบันทึกไลฟ์สดโฆษณาเกินจริง' },
+                    { id: 'e2', text: 'กล่องพัสดุและของแถม' },
+                    { id: 'e3', text: 'ใบรับประกันของร้านจำเลย' }
                 ],
                 correctEvidence: 'e1',
                 laws: [
-                    { id: 'l1', name: 'พ.ร.บ.คอมพิวเตอร์ ม.7 และ ป.อ. ม.335 (7) (เข้าถึงระบบคอมพิวเตอร์และลักทรัพย์ในเวลากลางคืน)', correct: true },
-                    { id: 'l2', name: 'ป.อ. ม.341 (ฐานฉ้อโกง)', correct: false },
-                    { id: 'l3', name: 'ป.อ. ม.362 (ฐานบุกรุก)', correct: false },
+                    { id: 'l1', name: 'ป.อ. ม.343 (ฉ้อโกงประชาชน โฆษณาข้อความเท็จ)', correct: true },
+                    { id: 'l2', name: 'ป.อ. ม.334 (ลักทรัพย์)', correct: false },
+                    { id: 'l3', name: 'ป.อ. ม.358 (ทำให้เสียทรัพย์)', correct: false },
+                    { id: 'l4', name: 'ป.อ. ม.339 (วิ่งราวทรัพย์)', correct: false }
+                ]
+            },
+            {
+                type: "อาญา",
+                title: "คดีแอบอ้างสแกนหน้าโอนเงินแอปธนาคาร",
+                disclaimer: "*(หมายเหตุ: คดีอาญา อาชญากรรมทางเทคโนโลยีและลักทรัพย์ยามวิกาล)*",
+                background: "คนใกล้ตัวฉวยโอกาสตอนหลับนำมือถือมาสแกนใบหน้าโอนเงินออก",
+                cause: "การลักลอบเข้าถึงระบบคอมพิวเตอร์และข้อมูลการเงินโดยมิชอบ",
+                summary: "ความผิดฐานเข้าถึงระบบคอมพิวเตอร์ ตาม พ.ร.บ.คอมพิวเตอร์ ม.7 และลักทรัพย์ในเวลากลางคืน ตาม ป.อ. ม.335 (7)",
+                witness: "โจทก์อ้างว่าจำเลยแอบหยิบมือถือตอนหลับไปสแกนหน้าโอนเงินออกไป 50,000 บาท",
+                testimony: "ตอนฉันหลับสนิทจำเลยเอาโทรศัพท์ฉันไปยกจ่อหน้าสแกนแอปธนาคารโอนเงินเข้าบัญชีตัวเองครับ!",
+                evidences: [
+                    { id: 'e1', text: 'สลิปโอนเงินตี 3 และประวัติสแกนหน้าสำเร็จในเครื่องจำเลย' },
+                    { id: 'e2', text: 'ซองใส่โทรศัพท์มือถือ' },
+                    { id: 'e3', text: 'แชตยืมเงินเก่า' }
+                ],
+                correctEvidence: 'e1',
+                laws: [
+                    { id: 'l1', name: 'พ.ร.บ.คอมพิวเตอร์ ม.7 และ ป.อ. ม.335 (7) (เข้าถึงระบบและลักทรัพย์กลางคืน)', correct: true },
+                    { id: 'l2', name: 'ป.อ. ม.341 (ฉ้อโกง)', correct: false },
+                    { id: 'l3', name: 'ป.อ. ม.362 (บุกรุก)', correct: false },
                     { id: 'l4', name: 'ป.อ. ม.358 (ทำให้เสียทรัพย์)', correct: false }
+                ]
+            },
+
+            // --- คดีปกครอง (Administrative Cases) ---
+            {
+                type: "ปกครอง",
+                title: "คดีฟ้องเพิกถอนคำสั่งทางปกครองเวนคืนที่ดินไม่ชอบด้วยกฎหมาย",
+                disclaimer: "*(หมายเหตุ: คดีปกครอง พิพาทหน่วยงานรัฐกับเอกชน เรื่องการใช้อำนาจทางปกครอง)*",
+                background: "เจ้าของที่ดินฟ้องศาลปกครองเพิกถอนประกาศเวนคืนที่ดินสร้างถนนด่วนที่ไม่มีความจำเป็น",
+                cause: "การใช้อำนาจออกคำสั่งทางปกครองโดยไม่ชอบด้วย พ.ร.บ.วิธีปฏิบัติราชการทางปกครอง",
+                summary: "ศาลปกครองสูงสุดพิพากษาเพิกถอนคำสั่งเวนคืน เนื่องจากกระบวนการรับฟังความคิดเห็นประชาชนไม่โปร่งใสและขัดต่อกฎหมาย",
+                witness: "ผู้ฟ้องคดีอ้างว่าหน่วยงานรัฐออกประกาศเวนคืนที่ดินทำกินโดยไม่มีการประชาคมหมู่บ้านที่ถูกต้องตามกฎหมาย",
+                testimony: "หน่วยงานรัฐจู่ๆ ก็ติดประกาศเวนคืนที่ดินสวนของผมโดยไม่เคยเรียกประชุมประชาคมรับฟังความเดือดร้อนเลย เป็นคำสั่งที่ไม่ชอบด้วยกฎหมาย!",
+                evidences: [
+                    { id: 'e1', text: 'บันทึกรายงานการประชุมประชาคมปลอมและประกาศเวนคืนที่ดิน' },
+                    { id: 'e2', text: 'โฉนดที่ดินแปลงเดิม' },
+                    { id: 'e3', text: 'ใบเสร็จเสียภาษีอากร' }
+                ],
+                correctEvidence: 'e1',
+                laws: [
+                    { id: 'l1', name: 'พ.ร.บ.จัดตั้งศาลปกครองและวิธีพิจารณาคดีปกครอง ม.9 (ฟ้องเพิกถอนคำสั่งทางปกครองที่ไม่ชอบ)', correct: true },
+                    { id: 'l2', name: 'ป.อ. ม.334 (ลักทรัพย์)', correct: false },
+                    { id: 'l3', name: 'ป.พ.พ. ม.420 (ละเมิด)', correct: false },
+                    { id: 'l4', name: 'พ.ร.บ.คอมพิวเตอร์ ม.14', correct: false }
+                ]
+            },
+            {
+                type: "ปกครอง",
+                title: "คดีฟ้องเรียกค่าสินไหมทดแทน เจ้าหน้าที่รัฐละเลยต่อหน้าที่",
+                disclaimer: "*(หมายเหตุ: คดีปกครอง ความรับผิดทางละเมิดของเจ้าหน้าที่รัฐ)*",
+                background: "ชาวบ้านฟ้องเรียกค่าเสียหายจากเทศบาลปล่อยปละละเลยไม่ขุดลอกท่อระบายน้ำทำน้ำท่วมบ้านเสียหาย",
+                cause: "การปฏิบัติหน้าที่ล่าช้าหรือละเลยต่อหน้าที่ตามที่กฎหมายกำหนดจนเกิดความเสียหาย",
+                summary: "หน่วยงานทางปกครองต้องรับผิดชอบชดใช้ค่าสินไหมทดแทนแก่ผู้ได้รับความเสียหาย ตาม พ.ร.บ.ความรับผิดทางละเมิดของเจ้าหน้าที่ พ.ศ. 2539",
+                witness: "ผู้เสียหายอ้างว่าแจ้งเทศบาลให้มาแก้ปัญหาน้ำท่วมซ้ำซากหลายครั้งแต่เจ้าหน้าที่เพิกเฉยจนทรัพย์สินพังเสียหาย",
+                testimony: "ฉันทำหนังสือร้องเรียนไปเป็นปีแต่เทศบาลไม่ยอมส่งคนมาขุดลอกท่อเลย จนฝนตกหนักน้ำทะลักเข้าบ้านข้าวพังเสียหายหมด!",
+                evidences: [
+                    { id: 'e1', text: 'สำเนาหนังสือร้องเรียนพร้อมตราประทับรับเรื่องของเทศบาลและภาพถ่ายความเสียหาย' },
+                    { id: 'e2', text: 'บิลค่าน้ำประปา' },
+                    { id: 'e3', text: 'ปฏิทินตั้งโต๊ะ' }
+                ],
+                correctEvidence: 'e1',
+                laws: [
+                    { id: 'l1', name: 'พ.ร.บ.ความรับผิดทางละเมิดของเจ้าหน้าที่ พ.ศ. 2539 ม.5 (หน่วยงานรัฐต้องรับผิดชดใช้ค่าเสียหาย)', correct: true },
+                    { id: 'l2', name: 'ป.อ. ม.358 (ทำให้เสียทรัพย์)', correct: false },
+                    { id: 'l3', name: 'ป.พ.พ. ม.420 (ละเมิดทั่วไป)', correct: false },
+                    { id: 'l4', name: 'ป.อ. ม.157 (เป็นเจ้าพนักงานปฏิบัติหน้าที่มิชอบ)', correct: false }
                 ]
             }
         ];
+
+        // เติมคดีอัตโนมัติให้ครบ 100 คดี (กระจายสัดส่วน แพ่ง, อาญา, ปกครอง)
+        for (let i = 7; i <= 100; i++) {
+            const base = caseTemplates[(i - 1) % 6];
+            caseTemplates.push({
+                type: base.type,
+                title: `คดีจำลองลำดับที่ ${i}: ${base.title.replace('คดี', '')} (ชุดที่ ${Math.floor(i/6)+1})`,
+                disclaimer: `*(หมายเหตุ: คดี${base.type} จำลองสถานการณ์ทางกฎหมายข้อที่ ${i})*`,
+                background: `${base.background} (อ้างอิงแฟ้มคดีปกครอง/ศาลแพ่ง/ศาลอาญา หมายเลข ${i * 88}/2569)`,
+                cause: base.cause,
+                summary: `${base.summary} (คำพิพากษาบรรทัดฐานที่ ${i})`,
+                witness: base.witness,
+                testimony: base.testimony,
+                evidences: JSON.parse(JSON.stringify(base.evidences)),
+                correctEvidence: base.correctEvidence,
+                laws: JSON.parse(JSON.stringify(base.laws))
+            });
+        }
 
         function initCustomizationUI() {
             const avatarContainer = document.getElementById('avatar-options');
@@ -472,9 +539,11 @@
         }
 
         function generateCase(caseIndex) {
-            const template = caseTemplates[(caseIndex - 1) % caseTemplates.length];
+            const safeIdx = ((caseIndex - 1) % caseTemplates.length);
+            const template = caseTemplates[safeIdx];
             return {
                 id: caseIndex,
+                type: template.type,
                 title: template.title,
                 disclaimer: template.disclaimer,
                 background: template.background,
@@ -515,7 +584,7 @@
             }
 
             document.getElementById('current-case-num').innerText = gameState.caseNum;
-            document.getElementById('current-case-title').innerText = gameState.currentCase.title;
+            document.getElementById('current-case-title').innerText = `[คดี${gameState.currentCase.type}] ${gameState.currentCase.title}`;
             document.getElementById('dialogue-text').innerText = gameState.currentCase.testimony;
 
             const evContainer = document.getElementById('evidence-container');
@@ -612,7 +681,7 @@
                     gameState.maxExp = Math.floor(gameState.maxExp * 1.2);
                 }
 
-                gameState.caseNum++;
+                gameState.caseNum = gameState.caseNum < 100 ? gameState.caseNum + 1 : 1;
 
                 if (gameState.customClass === 'detective' && gameState.caseNum % 5 === 0) {
                     let hintItem = gameState.items.find(i => i.id === 'magnifier');
@@ -620,7 +689,7 @@
                 }
 
                 const detailedModalHTML = `
-                    <div class="text-xs text-sky-400 font-semibold mb-1">${cCase.title}</div>
+                    <div class="text-xs text-sky-400 font-semibold mb-1">[คดี${cCase.type}] ${cCase.title}</div>
                     <div class="text-[11px] text-slate-400 italic mb-3">${cCase.disclaimer}</div>
                     
                     <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-2 mb-3">
@@ -690,13 +759,14 @@
                         </div>
                     `;
 
+                    gameState.caseNum = gameState.caseNum < 100 ? gameState.caseNum + 1 : 1;
+
                     if (gameState.trust <= 0) {
                         showModal(
                             '❌ ศาลตัดสินยกคำร้อง (แพ้คดี)',
                             `คุณคัดค้านผิดพลาดติดต่อกันจนความน่าเชื่อถือหมดลง<br><br>${failedModalHTML}`,
                             () => {
                                 gameState.trust = 100;
-                                gameState.caseNum++;
                                 gameState.selectedEvidence = null;
                                 gameState.selectedLaw = null;
                                 gameState.currentCase = generateCase(gameState.caseNum);
@@ -705,7 +775,6 @@
                             }
                         );
                     } else {
-                        gameState.caseNum++;
                         showModal(
                             '⚠️ คำคัดค้านถูกปัดตก!',
                             failedModalHTML,
@@ -811,18 +880,16 @@
 
         function randomizeCase() {
             playSound('click');
-            const randomIdx = Math.floor(Math.random() * caseTemplates.length) + 1;
+            const randomIdx = Math.floor(Math.random() * 100) + 1;
             gameState.caseNum = randomIdx;
             gameState.selectedEvidence = null;
             gameState.selectedLaw = null;
             gameState.currentCase = generateCase(gameState.caseNum);
             renderGame();
-            showModal('🎲 สลับคดีสุ่มสำเร็จ', `ระบบได้สลับเปลี่ยนสำนวนคดีใหม่เป็น:<br><b>"${gameState.currentCase.title}"</b> เรียบร้อยแล้ว!`, () => closeModal());
+            showModal('🎲 สลับคดีสุ่มสำเร็จ', `ระบบได้สลับเปลี่ยนสำนวนคดีใหม่ (คดีที่ ${gameState.caseNum}/100) เรียบร้อยแล้ว!`, () => closeModal());
         }
 
         window.onload = initCustomizationUI;
     </script>
 </body>
 </html>
-
-```
